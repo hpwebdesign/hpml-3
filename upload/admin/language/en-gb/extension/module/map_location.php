@@ -7,6 +7,11 @@ $_['text_extension']   = 'Extensions';
 $_['text_success']     = 'Success: You have modified map location module!';
 $_['text_edit']        = 'Edit map location Module';
 
+$_['text_map_location']           = 'Map Location';
+$_['text_customer_map_location']  = 'Customer Map Location';
+$_['text_customer_location']      = 'Customer Location';
+$_['text_store_location']         = 'Store Location';
+
 // Entry
 $_['entry_status']     = 'Status';
 

@@ -10,7 +10,8 @@ class ControllerExtensionModuleMapLocation extends Controller
 
 		$this->install();
 		
-		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->setTitle($this->language->get('heading_title2'));
+		$data['heading_title'] = $this->language->get('heading_title2');
 
 		$this->load->model('setting/setting');
 
