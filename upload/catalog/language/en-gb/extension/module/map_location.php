@@ -4,6 +4,8 @@ $_['text_map_location']           = 'Map Location';
 
 $_['button_edit_location']        = 'Edit Map Location';
 
+$_['button_save_location']        = 'Save Location';
+
 $_['entry_map_location']          = 'Map Location';
 
 $_['text_success_update_map']     =  'Success update map location!';        
