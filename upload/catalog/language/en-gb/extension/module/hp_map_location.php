@@ -3,7 +3,6 @@ $_['text_my_location']            = 'My Location';
 $_['text_map_location']           = 'Map Location';
 
 $_['button_edit_location']        = 'Edit Map Location';
-
 $_['button_save_location']        = 'Save Location';
 
 $_['entry_map_location']          = 'Map Location';

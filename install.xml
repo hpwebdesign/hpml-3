@@ -5,15 +5,61 @@
   <link>http://www.hpwebdesign.id</link>
   <author><![CDATA[HP Web Design]]></author>
 
+
+  <file path="admin/controller/common/header.php">
+    <operation error="skip">
+      <search trim="true"><![CDATA[return $this->load->view('common/header', $data);]]></search>
+      <add position="before"><![CDATA[
+    $this->session->data['hp_ext'][]= array(
+            "code" => "hpml",
+            "group" => "module_hp_map_location",
+            "link" => "extension/module/hp_map_location",
+            "name" => "HP Map Location");
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="admin/language/en-gb/common/column_left.php">
+    <operation error="skip">
+      <search trim="true"><![CDATA[// Text]]></search>
+      <add position="after"><![CDATA[
+     $_['text_hp_map_location']   = 'HP Map Location';
+    ]]>      </add>
+    </operation>
+  </file>
+
+  <file path="admin/language/id-id/common/column_left.php">
+    <operation error="skip">
+      <search trim="true"><![CDATA[// Text]]></search>
+      <add position="after"><![CDATA[
+   $_['text_hp_map_location']   = 'HP Map Location';
+      ]]>      </add>
+    </operation>
+  </file>
+
+  <file path="admin/controller/common/column_left.php">
+    <operation error="skip">
+      <search><![CDATA[$hpwd = array();]]></search>
+      <add position="after"><![CDATA[
+            if ($this->user->hasPermission('access', 'extension/module/hp_map_location')) {
+        $hpwd[] = array(
+          'name'     => $this->language->get('text_hp_map_location'),
+          'href'     => $this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true),
+          'children' => array()
+        );
+      }]]></add>
+    </operation>
+  </file>
+
   <file path="admin/view/template/sale/order_info.twig">
     <operation error="skip">
       <search index="1"   trim="true"><![CDATA[<table class="table table-bordered">]]></search>
       <add  position="before"><![CDATA[
-      {% if(module_map_location_status and show_map) %}
+      {% if(module_hp_map_location_status and show_map) %}
              {% if(map_location_lat and map_location_lng) %}
           <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAfSMMtCOTGWu2w0r1s_2HA0nZD3BrEf8&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
           <h3 class="panel-title">{{ text_customer_map_location }}</h3>
@@ -48,10 +94,11 @@
     <operation error="skip">
       <search index="0"   trim="true"><![CDATA[if ($order_info) {]]></search>
       <add  position="after"><![CDATA[
-        $this->load->language('extension/module/map_location');
+        $this->load->language('extension/module/hp_map_location');
         $data['map_location_lat'] = $order_info['map_location_lat']; 
         $data['map_location_lng'] = $order_info['map_location_lng'];
-        $data['module_map_location_status'] = $this->config->get('module_map_location_status');
+        $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+        $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         if($order_info['shipping_code'] == "hp_grab.hp_grab" || $order_info['shipping_code'] == "hp_gojek.hp_gojek"){
         
           $data['show_map'] = true;
@@ -80,7 +127,7 @@
     <operation error="skip">
       <search index="1" trim="true"><![CDATA[</select>]]></search>
       <add offset="2" position="after"><![CDATA[
-      {% if(module_map_location_status) %}
+      {% if(module_hp_map_location_status) %}
         <style type="text/css">
       #map {
         height: 500px;
@@ -89,7 +136,7 @@
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAfSMMtCOTGWu2w0r1s_2HA0nZD3BrEf8&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
     
@@ -167,14 +214,15 @@
 		}
 		
       
-        $data['module_map_location_status'] = $this->config->get('module_map_location_status');
+        $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+        $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
       ]]></add>
     </operation>
     
      <operation error="skip">
       <search  trim="true"><![CDATA[$this->load->language('setting/setting');]]></search>
       <add position="before"><![CDATA[
-      $this->load->language('extension/module/map_location');
+      $this->load->language('extension/module/hp_map_location');
       ]]></add>
     </operation>
     
@@ -185,7 +233,7 @@
     <operation error="skip">
       <search  trim="true"><![CDATA[</fieldset>]]></search>
       <add position="before"><![CDATA[
-       {% if(module_map_location_status) %}
+       {% if(module_hp_map_location_status) %}
            <style type="text/css">
       #map {
         height: 500px;
@@ -194,7 +242,7 @@
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAfSMMtCOTGWu2w0r1s_2HA0nZD3BrEf8&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
     
@@ -272,16 +320,16 @@
 		} else {
 			$data['map_location_lng'] = '110.370529';
 		}
-		$this->load->language('extension/module/map_location');
-		  $data['module_map_location_status'] = $this->config->get('module_map_location_status');
-
+		$this->load->language('extension/module/hp_map_location');
+		  $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+    $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
       ]]></add>
     </operation>
     
      <operation error="skip">
       <search  trim="true"><![CDATA[// Custom field validation]]></search>
       <add position="before"><![CDATA[
-     if($this->config->get('module_map_location_status')){
+     if($this->config->get('module_hp_map_location_status')){
          if (
          $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) || 
          $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat']) 
@@ -386,14 +434,14 @@
       <operation error="skip">
       <search  trim="true"><![CDATA[$('#shipping-new').hide();]]></search>
       <add position="after"><![CDATA[
-         $('#button-edit-map-position').show();
+         $('#button-edit-map-location').show();
       ]]></add>
     </operation>
     
      <operation error="skip">
       <search  trim="true"><![CDATA[<div class="pull-right">]]></search>
       <add position="after"><![CDATA[
-       {% if (module_map_location_status) %}
+       {% if (module_hp_map_location_status) %}
          <input type="button" value="{{ button_edit_location }}" id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
          
          <div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -482,7 +530,7 @@ formData.append(`map_location_lng`, lng);
 
            
           
-fetch("index.php?route=extension/module/map_location/editMapLocation", {
+fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
             method: "post",
             body: formData
         })
@@ -513,7 +561,7 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[{% for custom_field in custom_fields %}]]></search>
       <add position="before"><![CDATA[
-     {% if (module_map_location_status) %}
+     {% if (module_hp_map_location_status) %}
            <style type="text/css">
       #input-shipping-map-location {
         height: 500px;
@@ -589,11 +637,24 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
       <operation error="skip">
       <search  trim="true"><![CDATA[<div id="checkout-checkout" class="container">]]></search>
       <add position="after"><![CDATA[
+      {% if (module_hp_map_location_status) %}
            <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAfSMMtCOTGWu2w0r1s_2HA0nZD3BrEf8&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=&v=weekly"
 
     ></script>
+    {% endif %}
+      ]]></add>
+    </operation>
+  
+  </file>
+
+  <file path="catalog/controller/checkout/checkout.php">  
+      <operation error="skip">
+      <search  trim="true"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
+      <add position="after"><![CDATA[
+         $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
       ]]></add>
     </operation>
   
@@ -604,7 +665,7 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
       <search  trim="true"><![CDATA[// Custom field validation]]></search>
       <add  position="before"><![CDATA[
 				
-	   if($this->config->get('module_map_location_status')){
+	   if($this->config->get('module_hp_map_location_status')){
          if (
          $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) || 
          $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat']) 
@@ -618,8 +679,8 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
      <operation error="skip">
       <search  trim="true"><![CDATA[$this->response->setOutput($this->load->view('checkout/shipping_address', $data));]]></search>
       <add  position="before"><![CDATA[
-      $this->load->language('extension/module/map_location');
-	   	$data['module_map_location_status'] = $this->config->get('module_map_location_status');
+      $this->load->language('extension/module/hp_map_location');
+	   	$data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
       ]]></add>
     </operation>
     
@@ -656,11 +717,11 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
       <search   trim="true"><![CDATA[<div class="table-responsive">]]></search>
       <add  position="after"><![CDATA[
       
-      {% if(module_map_location_status and show_map) %}
+      {% if(module_hp_map_location_status and show_map) %}
       {% if(map_location_lat and map_location_lng) %}
           <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAfSMMtCOTGWu2w0r1s_2HA0nZD3BrEf8&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
           <h3>{{ text_my_location }}</h3>
@@ -699,10 +760,11 @@ fetch("index.php?route=extension/module/map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[if ($order_info) {]]></search>
       <add  position="after"><![CDATA[
-         $this->load->language('extension/module/map_location');
+         $this->load->language('extension/module/hp_map_location');
           $data['map_location_lat'] = $order_info['map_location_lat']; 
           $data['map_location_lng'] = $order_info['map_location_lng'];
-          $data['module_map_location_status'] = $this->config->get('module_map_location_status');
+          $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
            if($order_info['shipping_code'] == "hp_grab.hp_grab" || $order_info['shipping_code'] == "hp_gojek.hp_gojek"){
         
           $data['show_map'] = true;

@@ -1,6 +1,6 @@
 <?php
 
-class ControllerExtensionModuleMapLocation extends Controller
+class ControllerExtensionModuleHpMapLocation extends Controller
 {
 	
 	public function editMapLocation(){

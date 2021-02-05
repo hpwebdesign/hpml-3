@@ -1,26 +1,35 @@
 <?php
 
-class ControllerExtensionModuleMapLocation extends Controller
+class ControllerExtensionModuleHpMapLocation extends Controller
 {
+
+	private $version = '1.0.0';
 
 	private $error = array();
 
 	public function index() {
-		$this->load->language('extension/module/map_location');
+		$this->load->language('extension/module/hp_map_location');
 
 		$this->install();
 		
 		$this->document->setTitle($this->language->get('heading_title2'));
 		$data['heading_title'] = $this->language->get('heading_title2');
 
+		//Load additional CSS/JS
+		$this->document->addScript('view/javascript/bootstrap-toggle/js/bootstrap-toggle.min.js');
+		$this->document->addStyle('view/javascript/bootstrap-toggle/css/bootstrap-toggle.min.css');
+
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('module_map_location', $this->request->post);
-
+			$post = $this->request->post;
+			foreach ($post as $key => $value) {
+				$data['module_hp_map_location_' . $key] = $value;
+			}
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
+			$this->model_setting_setting->editSetting('module_hp_map_location', $data);
+			$this->response->redirect($this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true));
 		}
 
 		if (isset($this->error['warning'])) {
@@ -28,6 +37,8 @@ class ControllerExtensionModuleMapLocation extends Controller
 		} else {
 			$data['error_warning'] = '';
 		}
+
+		$data['version'] = $this->version;
 
 		$data['breadcrumbs'] = array();
 
@@ -43,29 +54,42 @@ class ControllerExtensionModuleMapLocation extends Controller
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/module/map_location', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
-		$data['action'] = $this->url->link('extension/module/map_location', 'user_token=' . $this->session->data['user_token'], true);
+		$inputs = [
+			[
+				"name" => "status",
+				"default" => 0,
+			],
+			[
+				"name" => "api",
+				"default" => '',
+			],
+		];
 
-		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
+		foreach ($inputs as $input) {
+			$key = "module_hp_map_location_" . $input['name'];
 
-		if (isset($this->request->post['module_map_location_status'])) {
-			$data['module_map_location_status'] = $this->request->post['module_map_location_status'];
-		} else {
-			$data['module_map_location_status'] = $this->config->get('module_map_location_status');
+			if (isset($this->request->post[$key])) {
+				$data[$input['name']] = $this->request->post[$key];
+			} else if ($this->config->get($key)) {
+				$data[$input['name']] = $this->config->get($key);
+			} else {
+				$data[$input['name']] = $input['default'];
+			}
 		}
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('extension/module/map_location', $data));
+		$this->response->setOutput($this->load->view('extension/module/hp_map_location', $data));
 	}
 
 
 	protected function validate() {
-		if (!$this->user->hasPermission('modify', 'extension/module/map_location')) {
+		if (!$this->user->hasPermission('modify', 'extension/module/hp_map_location')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 

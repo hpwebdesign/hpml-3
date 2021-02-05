@@ -1,0 +1,118 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div>
+				<h1>{{ heading_title }}</h1>
+				<ul class="breadcrumb">
+					{% for breadcrumb in breadcrumbs %}
+						<li>
+							<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container-fluid">
+		{% if success %}
+			<div class="alert alert-success">
+				<i class="fa fa-check-circle"></i>
+				{{ success }}
+				<button class="close" data-dismiss="alert" type="button">&times;</button>
+			</div>
+		{% endif %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i class="fa fa-pencil"></i>
+					{{ text_edit }}
+				</h3>
+			</div>
+
+			<div class="panel-body">
+				<form class="form-horizontal" id="form-setting" enctype="multipart/form-data" id="form-setting" method="post">
+
+					<button type="submit" form="form-setting" data-toggle="tooltip" title="{{ button_save_all_setting }}" class="btn btn-info pull-right" id="button-save">
+						<i class="fa fa-save"></i>
+						{{ text_save_all_setting }}
+					</button>
+
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="#tab-general">
+								<i class="fa fa-cog fa-fw"></i>
+								{{ tab_general }}</a>
+						</li>
+							<li >
+							<a data-toggle="tab" href="#tab-help">
+								<i class="fa fa-question-circle"></i>
+								{{ tab_help }}</a>
+						</li>
+
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab-general">
+						 
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_status }}</label>
+								<div class="col-sm-5">
+									<input type="checkbox" name="status" data-toggle="toggle" value="1" data-off-label="{{ text_no }}" data-on-label="{{ text_yes }}" {% if status %} checked="checked" {% endif %}/>
+								</div>
+							</div>
+
+					   	<div class="form-group required">
+										<label class="col-sm-3 control-label" for="api">
+                      {{ entry_map_api }}
+											<span class="help">
+                      {{ help_map_api }}
+											</span>
+										</label>
+										<div class="col-sm-4">
+											<input name="api" type="text" value="{{ api }}"  class="form-control">
+										</div>
+									</div>
+			
+						</div>
+						<div class="tab-pane" id="tab-help">
+							<legend>{{ heading_title }}</legend>
+							<div class="alert alert-info">
+								<i class="fa fa-info-circle"></i>
+								{{ text_version }}:
+								{{ version }}</div>
+
+							<legend>{{ text_support }}</legend>
+							<div class="alert alert-info">
+								<i class="fa fa-info-circle"></i>
+								{{ text_support_content }}</div>
+							<div>
+								<img src="view/image/logohpwd.png" width="150"/>
+								<p>
+									<a href="http://hpwebdesign.id" target="_blank">http://hpwebdesign.id</a>
+									<br/>
+									<a href="mailto:support@hpwebdesign.id" target="_blank">support@hpwebdesign.id</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.help {
+		color: #888;
+		font-weight: normal;
+		font-size: 11px;
+		display: block;
+		margin-top: 3px;
+		margin-bottom: 10px;
+		font-style: italic;
+	}
+</style>
+{{ footer }}
