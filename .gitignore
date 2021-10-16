@@ -1,0 +1,4 @@
+distribution/
+obfuscated/
+*.zip
+.idea/
