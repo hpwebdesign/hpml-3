@@ -98,10 +98,27 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 	public function install()
 	{
-		$sqls[] = "ALTER TABLE " . DB_PREFIX . "address ADD COLUMN IF NOT EXISTS `map_location_lat` VARCHAR(50)";
-		$sqls[] = "ALTER TABLE " . DB_PREFIX . "address ADD COLUMN IF NOT EXISTS `map_location_lng` VARCHAR(50)";
-		$sqls[] = "ALTER TABLE " . DB_PREFIX . "order ADD COLUMN IF NOT EXISTS `map_location_lat` VARCHAR(50)";
-		$sqls[] = "ALTER TABLE " . DB_PREFIX . "order ADD COLUMN IF NOT EXISTS `map_location_lng` VARCHAR(50)";
+		$query1 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order` LIKE 'map_location_lat'");
+		$query2 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "address` LIKE 'map_location_lat'");
+		$query3 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "address` LIKE 'map_location_lng'");
+		$query4 = $this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "order` LIKE 'map_location_lng'");
+		$sqls = [];
+		
+		if(!$query1->num_rows){
+			$sqls[] = "ALTER TABLE " . DB_PREFIX . "order ADD map_location_lat VARCHAR(50)";
+		}
+
+		if(!$query2->num_rows){
+			$sqls[] = "ALTER TABLE " . DB_PREFIX . "address ADD map_location_lat VARCHAR(50)";
+		}
+
+		if(!$query3->num_rows){
+			$sqls[] = "ALTER TABLE " . DB_PREFIX . "address ADD map_location_lng VARCHAR(50)";
+		}
+
+		if(!$query4->num_rows){
+			$sqls[] = "ALTER TABLE " . DB_PREFIX . "order ADD map_location_lng VARCHAR(50)";
+		}
 		
 		$error = 0;
 
