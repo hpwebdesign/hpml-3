@@ -11,6 +11,8 @@ $_['text_success']     = 'Success: You have modified HP Map Location module!';
 $_['text_edit']        = 'Edit HP Map Location Module';
 
 $_['text_map_location']           = 'Map Location';
+$_['text_current_location']       = '<i class="fa fa-map-marker"></i> Get Current Location';
+$_['text_search_location']        = 'Search Location';
 $_['text_customer_map_location']  = 'Customer Map Location';
 $_['text_customer_location']      = 'Customer Location';
 $_['text_store_location']         = 'Store Location';

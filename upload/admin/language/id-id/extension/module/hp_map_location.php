@@ -8,6 +8,8 @@ $_['text_success']     = 'Sukses: Anda telah memodifikasi pengaturan HP Map Loca
 $_['text_edit']        = 'Edit Pengaturan HP Map Location';
 
 $_['text_map_location']           = 'Lokasi Map';
+$_['text_search_location']        = 'Cari Lokasi';
+$_['text_current_location']       = '<i class="fa fa-map-marker"></i> Dapatkan Lokasi Saat Ini';
 $_['text_customer_map_location']  = 'Lokasi Map Pelanggan';
 $_['text_customer_location']      = 'Lokasi Pelanggan';
 $_['text_store_location']         = 'Lokasi Toko';
