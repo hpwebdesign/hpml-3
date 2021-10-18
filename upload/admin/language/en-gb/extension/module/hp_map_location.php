@@ -6,9 +6,15 @@ $_['heading_title']             = '<span style="border-radius:2px;color:#fff;bac
 $_['tab_help']                  = "Help";
 
 // Text
-$_['text_extension']   = 'Extensions';
-$_['text_success']     = 'Success: You have modified HP Map Location module!';
-$_['text_edit']        = 'Edit HP Map Location Module';
+$_['text_yes']                  = 'Enabled';
+$_['text_no']                   = 'Disabled';
+$_['text_validation']           = 'Store Validation';
+$_['text_validate_store']       = 'In order to use this extension, please validate your store!. Kindly Contact Us to perform store validation for each domain.';
+$_['text_extension']            = 'Extensions';
+$_['text_success']              = 'Success: You have modified HP Map Location module!';
+$_['text_edit']                 = 'Edit HP Map Location Module';
+$_['text_information_provide']  = '<p>Please provides the following information:</p>';
+$_['text_upgrade_version']      = 'Versi baru dari ekstensi ini tersedia. Download <strong><a href="https://my.hpwebdesign.io" target="_blank">DISINI</a></strong>';
 
 $_['text_map_location']           = 'Map Location';
 $_['text_current_location']       = '<i class="fa fa-map-marker"></i> Get Current Location';

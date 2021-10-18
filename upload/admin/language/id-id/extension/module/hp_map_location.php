@@ -3,9 +3,15 @@ $_['heading_title2']            = "Map Location";
 $_['heading_title']             = '<span style="border-radius:2px;color:#fff;background:#8fbb6c;padding:2px 5px;">HP</span> Map Location';
 
 // Text
-$_['text_extension']   = 'Extensions';
-$_['text_success']     = 'Sukses: Anda telah memodifikasi pengaturan HP Map Location!';
-$_['text_edit']        = 'Edit Pengaturan HP Map Location';
+$_['text_yes']                  = 'Enabled';
+$_['text_no']                   = 'Disabled';
+$_['text_extension']            = 'Extensions';
+$_['text_success']              = 'Sukses: Anda telah memodifikasi pengaturan HP Map Location!';
+$_['text_edit']                 = 'Edit Pengaturan HP Map Location';
+$_['text_validation']           = 'Store Validation';
+$_['text_validate_store']       = 'In order to use this extension, please validate your store!. Kindly Contact Us to perform store validation for each domain.';
+$_['text_information_provide']  = '<p>Please provides the following information:</p>';
+$_['text_upgrade_version']      = 'Versi baru dari ekstensi ini tersedia. Download <strong><a href="https://my.hpwebdesign.io" target="_blank">DISINI</a></strong>';
 
 $_['text_map_location']           = 'Lokasi Map';
 $_['text_search_location']        = 'Cari Lokasi';

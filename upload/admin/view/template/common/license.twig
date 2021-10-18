@@ -1,0 +1,46 @@
+<div class="col-sm-4">
+  <div class="license">
+      <div class="box-heading">
+        <h3><i class="fa fa-id-card"></i>&nbsp;{{ text_license }}</h3>
+      </div>
+
+        <table class="table licensedTable">
+          <tbody>
+          <tr>
+            <td>{{ text_registered_domains }}</td>
+            <td>
+              <i class="fa fa-check"></i>&nbsp;{{ domain }}
+            </td>
+          </tr>
+          <tr>
+            <td>{{ text_support_expiry }}</td>
+            <td>{{ date }}</td>
+          </tr>
+          <tr>
+           {% if status %} <td colspan="2" class="alert alert-success text-center">{{ text_active }}</td>{% else %}<td colspan="2" class="alert alert-danger text-center">{{ text_inactive }}</td>{% endif %}
+          </tr>
+        </tbody></table>
+      {# <legend>{{ text_support }}</legend>
+      <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_support_content }}</div> #}
+
+
+      <legend>{{ text_version }}</legend>
+      <div class="alert alert-info">
+												<i class="fa fa-info-circle"></i> {{ version }}
+											</div>
+											<legend>{{ text_support }}</legend>
+											<div class="alert alert-info">
+												<i class="fa fa-info-circle"></i> {{ text_support_content }}
+												
+											</div>
+											<div>
+												<img width="150" src="view/image/logohpwd.png"/>
+												<p>
+													<a target="_blank" href="http://hpwebdesign.id">http://hpwebdesign.id</a>
+													<br/>
+													<a target="_blank" href="mailto:support@hpwebdesign.id">support@hpwebdesign.id</a>
+												</p>
+											</div>
+
+    </div>
+</div>

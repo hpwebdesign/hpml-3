@@ -17,6 +17,13 @@
 
 
 	<div class="container-fluid">
+	    {% if error_warning %}
+			<div class="alert alert-danger">
+				<i class="fa fa-exclamation-circle"></i>
+				{{ error_warning }}
+				<button class="close" data-dismiss="alert" type="button">&times;</button>
+			</div>
+		{% endif %}
 		{% if success %}
 			<div class="alert alert-success">
 				<i class="fa fa-check-circle"></i>
@@ -60,7 +67,10 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">{{ entry_status }}</label>
 								<div class="col-sm-10">
-									<input type="checkbox" name="status" data-toggle="toggle" value="1" data-off-label="{{ text_no }}" data-on-label="{{ text_yes }}" {% if status %} checked="checked" {% endif %}/>
+								<input type="checkbox" name="status" data-control="checkbox" value="1"
+									       data-off-label="{{ text_no }}"
+									       data-on-label="{{ text_yes }}" {% if status %} checked="checked" {% endif %} />
+								
 								</div>
 							</div>
 
@@ -77,26 +87,15 @@
 									</div>
 			
 						</div>
-						<div class="tab-pane" id="tab-help">
-							<legend>{{ heading_title }}</legend>
-							<div class="alert alert-info">
-								<i class="fa fa-info-circle"></i>
-								{{ text_version }}:
-								{{ version }}</div>
+						 <div class="tab-pane" id="tab-help">
+	                     <div id="license"></div>											
+	                     <div id="support"></div>
+		                <script type="text/javascript">
+			             $('#support').load('index.php?route=common/hp_validate/support&user_token={{ user_token }}');
+			             $('#license').load('index.php?route=common/hp_validate/license&user_token={{ user_token }}&code={{extension_code}}&version={{version}}');
+		              </script>
+	                  </div>
 
-							<legend>{{ text_support }}</legend>
-							<div class="alert alert-info">
-								<i class="fa fa-info-circle"></i>
-								{{ text_support_content }}</div>
-							<div>
-								<img src="view/image/logohpwd.png" width="150"/>
-								<p>
-									<a href="http://hpwebdesign.id" target="_blank">http://hpwebdesign.id</a>
-									<br/>
-									<a href="mailto:support@hpwebdesign.id" target="_blank">support@hpwebdesign.id</a>
-								</p>
-							</div>
-						</div>
 					</div>
 				</form>
 			</div>
@@ -115,4 +114,23 @@
 		font-style: italic;
 	}
 </style>
+<script>
+$(document).ready(function(){
+	$.get("https://hpwebdesign.io/index.php?route=common/extension/version&code={{ extension_code }}&oc=3.0.x.x", function(data, status){ 
+	    const version =  "{{version}}".replace(/\D/g,'');
+	    const latest_version = data.replace(/\D/g,'');
+	 if(version<latest_version){
+		 $('.panel.panel-default:first').parent().prepend(`<div class="alert alert-danger">
+		 <i class="fa fa-exclamation-circle"></i>
+		 {{text_upgrade_version}}
+		 </div>`);
+	 }
+ });
+
+ if ($.fn.checkboxpicker) {
+    $('[data-control=checkbox]').checkboxpicker({onClass: 'btn-info'});
+	$('.btn-group .btn').addClass('btn-sm');
+ }
+});
+</script>
 {{ footer }}
