@@ -987,10 +987,10 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     
   </file>
   
-         <file path="catalog/view/theme/*/template/account/{order_info.twig,order_info_hpwd.twig}">
+    <file path="catalog/view/theme/*/template/account/{order_info.twig,order_info_hpwd.twig}">
     <operation error="skip">
-      <search   trim="true"><![CDATA[<div class="table-responsive">]]></search>
-      <add  position="after"><![CDATA[
+      <search   trim="true"><![CDATA[{% if comment %}]]></search>
+      <add  position="before"><![CDATA[
       
       {% if(module_hp_map_location_status and show_map) %}
       {% if(map_location_lat and map_location_lng) %}
@@ -1040,11 +1040,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
           $data['map_location_lng'] = $order_info['map_location_lng'];
           $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
           $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
-           if($order_info['shipping_code'] == "hp_grab.hp_grab" || $order_info['shipping_code'] == "hp_gojek.hp_gojek"){
-        
           $data['show_map'] = true;
         
-        }
       ]]></add>
     </operation>
     
