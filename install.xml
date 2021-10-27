@@ -65,14 +65,17 @@
               justify-content: space-between;
             }
           </style>
-          <button id="show-location" class="btn btn-warning btn-sm pull-right"><i class="fa fa-map-marker"></i> Customer Location</button>
+          <div class="pull-right">
+             <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share Location</a>
+             <button id="show-location" class="btn btn-warning btn-sm"><i class="fa fa-map-marker"></i> Customer Location</button>
+          </div>
           
                    <div class="modal fade" data-backdrop="static" id="modal-show-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}</h4>
+        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}  <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share</a></h4>
       </div>
       <div class="modal-body">
        
@@ -141,6 +144,18 @@ $("#show-location").click(function(){
         $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         $data['show_map'] = $data['map_location_lat'] && $data['map_location_lng'];
+        
+        $map_url = 'http://maps.google.com/maps?q=' . $data['map_location_lat'] . ',' . $data['map_location_lng']; 
+        
+        $share_location_template = $this->config->get('module_hp_map_location_share_location_template_' . $this->config->get('config_language_id'));
+        
+        if(empty($share_location_template)){
+          $share_location_template = $this->language->get('placeholder_share_location_template');
+        }
+        
+        $share_location_template = rawurlencode(str_replace('{map_location}', $map_url, $share_location_template));
+        
+        $data['share_location_whatsapp'] = 'https://api.whatsapp.com/send?text='.$share_location_template;
       ]]></add>
     </operation>
     

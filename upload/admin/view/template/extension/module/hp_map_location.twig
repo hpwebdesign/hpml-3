@@ -85,6 +85,25 @@
 											<input name="api" type="text" value="{{ api }}"  class="form-control">
 										</div>
 									</div>
+
+						<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{entry_share_location_template}}
+								<span class="help">{{help_share_location_template}}</span>
+								</label>
+								<div class="col-sm-8">
+									{% for language in languages %}
+										{% set the_value = _context['share_location_template_'~language.language_id] is defined ? _context['share_location_template_'~language.language_id] : null %}
+
+										<div class="input-group">
+											<span class="input-group-addon"><img
+														src="language/{{ language.code }}/{{ language.code }}.png"
+														title="{{ language.name }}"/></span>
+											<textarea rows="3" name="share_location_template_{{ language.language_id }}"
+											          class="form-control"/>{{ the_value }}</textarea>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
 			
 						</div>
 						 <div class="tab-pane" id="tab-help">

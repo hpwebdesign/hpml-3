@@ -86,6 +86,16 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 				"default" => '',
 			],
 		];
+        $this->load->model('localisation/language');
+
+        $data['languages'] = $this->model_localisation_language->getLanguages();
+
+        foreach ($data['languages'] as $language) {
+            $inputs[] = [
+				"name" => "share_location_template_" . $language['language_id'],
+				"default" => $this->language->get('placeholder_share_location_template'),
+			];
+        }
 
 		foreach ($inputs as $input) {
 			$key = "module_hp_map_location_" . $input['name'];

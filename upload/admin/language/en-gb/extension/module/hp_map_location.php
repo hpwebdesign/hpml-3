@@ -28,10 +28,17 @@ $_['text_support']                = 'Get Support';
 $_['text_support_content']        = 'Every purchase of our extension is eligible for 6 months support. If you have any problem regarding the extention you have purchased or need advanced modification to fit your bussiness model. Feel free to <a href="mailto:support@hpwebdesign.id">Contact Us</a>';
 
 // Entry
-$_['entry_status']     = 'Status';
-$_['entry_map_api']    = 'Google Map API';
+$_['entry_status']                     = 'Status';
+$_['entry_map_api']                    = 'Google Map API';
+$_['entry_share_location_template']    = 'Share Location Template';
 
-$_['help_map_api']     = 'API key for Google Map';
+$_['help_map_api']                     = 'API key for Google Map';
+$_['help_share_location_template']     = 'Share location whatsapp template';
+
+$_['placeholder_share_location_template'] = 
+'Customer Location:
+{map_location}
+';
 
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify map location module!';

@@ -25,10 +25,17 @@ $_['text_version']                = 'Versi';
 $_['text_support_content']        = 'Setiap pembelian ekstensi kami memenuhi syarat untuk dukungan 6 bulan. Jika Anda memiliki masalah terkait perpanjangan yang telah Anda beli atau memerlukan modifikasi lanjutan agar sesuai dengan model bisnis Anda. Jangan ragu untuk <a href="mailto:support@hpwebdesign.id"> Hubungi Kami </a>';
 
 // Entry
-$_['entry_status']     = 'Status';
-$_['entry_map_api']    = 'Google Map API';
+$_['entry_status']                      = 'Status';
+$_['entry_map_api']                     = 'Google Map API';
+$_['entry_share_location_template']     = 'Templat Bagikan Lokasi';
 
-$_['help_map_api']     = 'Kunci API untuk Google Map';
+$_['help_map_api']                      = 'Kunci API untuk Google Map';
+$_['help_share_location_template']      = 'Templat whatsapp bagikan lokasi';
+
+$_['placeholder_share_location_template'] = 
+'Lokasi Customer:
+{map_location}
+';
 
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify map location module!';
