@@ -49,6 +49,23 @@
 			]]></add>
 		</operation>    
  </file>
+ 
+ <file path="admin/model/customer/customer.php">
+<operation error="skip">
+			<search trim="true"><![CDATA[return array(]]></search>
+			<add position="after"><![CDATA[		
+                'map_location_lat'     => $address_query->row['map_location_lat'] ? $address_query->row['map_location_lat'] : '-7.797068',
+				'map_location_lng'    => $address_query->row['map_location_lng'] ? $address_query->row['map_location_lng'] : '110.370529',
+			]]></add>
+		</operation>    
+		
+		<operation error="skip">
+			<search trim="true"><![CDATA[address SET]]></search>
+			<add position="replace"><![CDATA[address SET map_location_lat = '" . $this->db->escape($address['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($address['map_location_lng']) . "',]]></add>
+		</operation>    
+		
+		
+ </file>
 
   <file path="admin/view/template/sale/order_info.twig">
       
@@ -397,9 +414,131 @@ const input = document.getElementById("pac-input");
    
   </file>
   
+  <file path="admin/controller/customer/customer.php">
+    <operation error="skip">
+      <search  trim="true"><![CDATA[function getForm()]]></search>
+      <add position="after"><![CDATA[
+          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+          
+          if($data['module_hp_map_location_status']){
+             
+             $this->document->addScript('https://polyfill.io/v3/polyfill.min.js?features=default');
+             $this->document->addScript('https://maps.googleapis.com/maps/api/js?key=' . $this->config->get('module_hp_map_location_api') . '&libraries=places&v=weekly');
+             $this->document->addScript('view/javascript/hpml.js');
+          }
+      ]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search index="1,2" trim="true"><![CDATA[$this->load->language('customer/customer');]]></search>
+      <add position="before"><![CDATA[
+             $this->load->language('extension/module/hp_map_location');
+      ]]></add>
+    </operation>
+    
+   
+    
+   
+  </file>
+  
+   <file path="admin/view/template/customer/customer_form.twig">
+      <operation error="skip">
+      <search   trim="true"><![CDATA[<div id="content">]]></search>
+      <add position="after"><![CDATA[
+       {% if(module_hp_map_location_status) %}
+    <style type="text/css">
+      .map{
+        height: 500px;
+      }
+      
+      .current-location{
+        margin-top:20px;
+      }
+      
+      .pac-input{
+        display:none;
+        left: 176px!important;
+        margin-top:10px;
+        max-width:300px;
+      }
+    </style>
+    
+     {% endif %}
+
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search index="6"  trim="true"><![CDATA[<div class="form-group">]]></search>
+      <add position="before"><![CDATA[
+       {% if(module_hp_map_location_status) %}
+
+           <div class="form-group">
+            <label class="col-sm-2 control-label">{{ text_map_location }}</label>
+            <div class="col-sm-10"> 
+            <input id="pac-input{{address_row}}" class="pac-input form-control" type="text" placeholder="{{text_search_location}}"/>
+              <div class="map" id="map{{address_row}}"></div>
+               {% if error_map_location %}
+              <div class="text-danger">{{ error_map_location }}</div>
+              {% endif %} 
+                   <input value="{{address.map_location_lat}}" name="address[{{ address_row }}][map_location_lat]" type="hidden" value=""/>
+                   <input value="{{address.map_location_lng}}" name="address[{{ address_row }}][map_location_lng]" type="hidden" value=""/>
+                   
+              <button id="current-location{{address_row}}" type="button" class="btn btn-primary current-location">{{text_current_location}}</button>
+            </div>
+          </div>
+          
+            <script>
+              initMap({{address_row}}, {{address.map_location_lat}}, {{address.map_location_lng}});
+            </script>
+     {% endif %}
+      ]]></add>
+    </operation>
+    
+      <operation error="skip">
+      <search index="2"  trim="true"><![CDATA[html += '  <div class="form-group">';]]></search>
+      <add position="before"><![CDATA[
+       {% if(module_hp_map_location_status) %}
+       
+          
+         html += `<div class="form-group">
+            <label class="col-sm-2 control-label">{{ text_map_location }}</label>
+            <div class="col-sm-10"> 
+            <input id="pac-input${address_row}" class="pac-input form-control" type="text" placeholder="{{text_search_location}}"/>
+              <div class="map" id="map${address_row}"></div>
+               {% if error_map_location %}
+              <div class="text-danger">{{ error_map_location }}</div>
+              {% endif %} 
+                   <input value="-7.797068" name="address[${ address_row }][map_location_lat]" type="hidden" value=""/>
+                   <input value="110.370529" name="address[${ address_row }][map_location_lng]" type="hidden" value=""/>
+                   
+              <button id="current-location${address_row}" type="button" class="btn btn-primary current-location">{{text_current_location}}</button>
+            </div>
+          </div>`;
+          
+       {% endif %}
+      ]]></add>
+    </operation>
+    
+        <operation error="skip">
+      <search trim="true"><![CDATA[$('#tab-general .tab-content').append(html);]]></search>
+      <add position="after"><![CDATA[
+       {% if(module_hp_map_location_status) %}
+
+          initMap(address_row, -7.797068, 110.370529);
+          
+       {% endif %}
+      ]]></add>
+    </operation>
+    
+    
+    
+    
+    
+  </file>
+      
      <file path="catalog/view/theme/*/template/account/address_form.twig">
     <operation error="skip">
-      <search  trim="true"><![CDATA[</fieldset>]]></search>
+      <search index="2"  trim="true"><![CDATA[<div class="form-group">]]></search>
       <add position="before"><![CDATA[
        {% if(module_hp_map_location_status) %}
            <style type="text/css">
@@ -528,7 +667,6 @@ const input = document.getElementById("pac-input");
     });
         google.maps.event.addListener(map, 'click', function(event) {
         
-        console.log(event.latLng);
             marker.setPosition(event.latLng);
              setValueMap(event.latLng.lat(), event.latLng.lng());
             
