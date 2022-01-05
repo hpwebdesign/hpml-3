@@ -14,7 +14,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 		$this->houseKeeping();
 
-		$this->load->language('extension/module/hp_system_enhancer');
+		$this->load->language('extension/module/hp_map_location');
 
 		$this->rightman();
 
