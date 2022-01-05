@@ -2,3 +2,6 @@ distribution/
 obfuscated/
 *.zip
 .idea/
+build/
+vendor/
+RoboFile.php

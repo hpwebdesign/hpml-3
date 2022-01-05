@@ -1,8 +1,8 @@
 <modification>
-  <code>HPMapLocation</code>
   <name><![CDATA[HP Map Location]]></name>
-  <version>1.0.0</version>
-  <link>http://www.hpwebdesign.id</link>
+  <code>HPML</code>
+  <version>1.0.0.1</version>
+  <link>http://hpwebdesign.io</link>
   <author><![CDATA[HP Web Design]]></author>
 
   <file path="admin/language/en-gb/common/column_left.php">

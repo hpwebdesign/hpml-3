@@ -3,27 +3,26 @@
 class ControllerExtensionModuleHpMapLocation extends Controller
 {
 
-	private $version        = '1.0.0';
+	private $version        = '1.0.0.1';
     private $v_d            = '';
     private $extension_code = 'hpml';
     private $error 			= [];
+	private $domain 		= '';
 
 	public function index(){
-		$this->load->language('extension/module/hp_map_location');
+		$this->domain	 = str_replace("www.","",$_SERVER['SERVER_NAME']);
 
-        $this->rightman();
+		$this->houseKeeping();
 
-        if ($_SERVER['SERVER_NAME'] != $this->v_d) {
+		$this->load->language('extension/module/hp_system_enhancer');
+
+		$this->rightman();
+
+        if ($this->domain != $this->v_d) {
             $this->storeAuth();
         } else {
             $this->setting();
         }
-	}
-
-	public function install()
-	{
-		$str = file_get_contents('https://api.hpwebdesign.id/system.ocmod.txt');
-		file_put_contents(dirname(getcwd()) . '/system/system.ocmod.xml', $str);
 	}
 
 	private function setting() {
@@ -171,141 +170,10 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 
 
-    protected function rightman()
-    {
-        if (file_exists(dirname(getcwd()) . '/system/library/cache/hpml_log')) {
-            $this->v_d = $this->VS(dirname(getcwd()) . '/system/library/cache/hpml_log');
-            if ($this->v_d != $_SERVER['SERVER_NAME']) {
-                if ($this->internetAccess()) {
-                    $data = $this->get_remote_data('https://api.hpwebdesign.id/hpml.txt');
-                    if (strpos($data, $_SERVER['SERVER_NAME']) !== false) {
-                        $eligible = $this->VD(dirname(getcwd()) . '/system/library/cache/hpml_log');
-                        $this->hpml(1, $eligible['date']);
-                        $this->response->redirect($this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true));
-                    }
-                } else {
-                    $this->error['warning'] = $this->language->get('error_no_internet_access');
-                }
-            }
-        } else {
-            if ($this->internetAccess()) {
-                $data = $this->get_remote_data('https://api.hpwebdesign.id/hpml.txt');
-                if (strpos($data, $_SERVER['SERVER_NAME']) !== false) {
-                    $this->hpml(1);
-                    $this->response->redirect($this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true));
-                }
-            } else {
-                $this->error['warning'] = $this->language->get('error_no_internet_access');
-            }
-        }
-    }
-
-    private function VD($path)
-    {
-        $data = [];
-        $source = @fopen($path, 'r');
-        $i = 0;
-        if ($source) {
-            while ($line = fgets($source)) {
-                $line = trim($line);
-                if ($i == 1) {
-                    $diff = strtotime(date("d-m-Y")) - strtotime($line);
-                    if (floor($diff / (24 * 60 * 60) > 0)) {
-                        $data['status'] = 0;
-                    } else {
-                        $data['status'] = 1;
-                    }
-                    $data['date'] = $line;
-                }
-                $i++;
-            }
-            return $data;
-        }
-    }
-
-    private function VS($path)
-    {
-
-        $data = $this->get_remote_data('https://api.hpwebdesign.id/hpml.txt');
-        if (strpos($data, $_SERVER['SERVER_NAME']) !== false) {
-            return $_SERVER['SERVER_NAME'];
-        }
-
-        return false;
-    }
-
-    protected function hpml($ref = 0, $date = null)
-    {
-        $pf = dirname(getcwd()) . '/system/library/cache/hpml_log';
-        if (!file_exists($pf)) {
-            fopen($pf, 'w');
-        }
-        $fh = fopen($pf, 'r');
-
-        if (!fgets($fh) || $ref = 1) {
-            $fh = fopen($pf, "wb");
-            if (!$fh) {
-                chmod($pf, 644);
-            }
-            fwrite($fh, "// HPWD -> Dilarang mengedit isi file ini untuk tujuan cracking validasi atau tindakan terlarang lainnya" . PHP_EOL);
-            $date = $date ? $date : date("d-m-Y", strtotime(date("d-m-Y") . ' + 1 year'));
-            fwrite($fh, $date . PHP_EOL);
-            fwrite($fh, $_SERVER['SERVER_NAME'] . PHP_EOL);
-        }
-
-        fclose($fh);
-    }
 
     private function internetAccess()
     {
         return true;
-    }
-
-
-    public function get_remote_data($url, $post_paramtrs = false)
-    {
-        $c = curl_init();
-        curl_setopt($c, CURLOPT_URL, $url);
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-        if ($post_paramtrs) {
-            curl_setopt($c, CURLOPT_POST, true);
-            curl_setopt($c, CURLOPT_POSTFIELDS, "var1=bla&" . $post_paramtrs);
-        }
-        curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($c, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1; rv:33.0) Gecko/20100101 Firefox/33.0");
-        curl_setopt($c, CURLOPT_COOKIE, 'CookieName1=Value;');
-        curl_setopt($c, CURLOPT_MAXREDIRS, 10);
-        $follow_allowed = (ini_get('open_basedir') || ini_get('safe_mode')) ? false : true;
-        if ($follow_allowed) {
-            curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
-        }
-        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($c, CURLOPT_REFERER, $url);
-        curl_setopt($c, CURLOPT_TIMEOUT, 60);
-        curl_setopt($c, CURLOPT_AUTOREFERER, true);
-        curl_setopt($c, CURLOPT_ENCODING, 'gzip,deflate');
-        $data = curl_exec($c);
-        $status = curl_getinfo($c);
-        curl_close($c);
-        if ($status['http_code'] == 200) {
-            return $data;
-        } else if ($status['http_code'] == 301 || $status['http_code'] == 302) {
-            if (!$follow_allowed) {
-                if (!empty($status['redirect_url'])) {
-                    $redirURL = $status['redirect_url'];
-                } else {
-                    preg_match('/href\=\"(.*?)\"/si', $data, $m);
-                    if (!empty($m[1])) {
-                        $redirURL = $m[1];
-                    }
-                }
-                if (!empty($redirURL)) {
-                    return call_user_func(__FUNCTION__, $redirURL, $post_paramtrs);
-                }
-            }
-        }
-        return "ERRORCODE22 with $url!!<br/>Last status codes<b/>:" . json_encode($status) . "<br/><br/>Last data got<br/>:$data";
     }
 
     public function curlcheck()
@@ -313,43 +181,123 @@ class ControllerExtensionModuleHpMapLocation extends Controller
         return in_array('curl', get_loaded_extensions()) ? true : false;
     }
 
-    public function storeAuth()
-    {
-        $data['curl_status'] = $this->curlcheck();
 
-        $this->load->language('extension/module/hp_map_location');
 
-        $this->document->setTitle($this->language->get('text_validation'));
+    public function storeAuth() {
+		$data['curl_status'] = $this->curlcheck();
+		$data['extension_code'] = $this->extension_code;
+		$data['user_token'] = $this->session->data['user_token'];
+		$this->flushdata();
 
-        $data['text_curl'] = $this->language->get('text_curl');
-        $data['text_disabled_curl'] = $this->language->get('text_disabled_curl');
+		$this->document->setTitle($this->language->get('text_validation'));
 
-        $data['text_validation'] = $this->language->get('text_validation');
-        $data['text_validate_store'] = $this->language->get('text_validate_store');
-        $data['text_information_provide'] = $this->language->get('text_information_provide');
-        $data['domain_name'] = $this->language->get('text_validate_store');
-        $data['domain_name'] = $_SERVER['SERVER_NAME'];
+		$data['text_curl']                  = $this->language->get('text_curl');
+		$data['text_disabled_curl']         = $this->language->get('text_disabled_curl');
 
-        $data['breadcrumbs'] = [];
+		$data['text_validation']            = $this->language->get('text_validation');
+		$data['text_validate_store']        = $this->language->get('text_validate_store');
+		$data['text_information_provide']   = $this->language->get('text_information_provide');
+		$data['domain_name'] = str_replace("www.","",$_SERVER['SERVER_NAME']);
 
-        $data['breadcrumbs'][] = [
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home', 'user_token=' . $this->session->data['user_token'], true),
-            'separator' => false,
-        ];
+		$data['breadcrumbs'] = array();
 
-        $data['breadcrumbs'][] = [
-            'text' => $this->language->get('heading_title2'),
-            'href' => $this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true),
-            'separator' => false,
-        ];
+		$data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'user_token=' . $this->session->data['user_token'], true),
+			'separator' => false
+		);
 
-        $data['header'] = $this->load->controller('common/header');
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['footer'] = $this->load->controller('common/footer');
+		$data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title2'),
+			'href'      => $this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true),
+			'separator' => false
+		);
 
-        $this->response->setOutput($this->load->view('extension/module/validation', $data));
-    }
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
+
+		$this->response->setOutput($this->load->view('extension/module/validation', $data));
+	}
+
+	private function rightman() {
+		if($this->internetAccess()) {
+			$this->load->model('extension/module/system_startup');
+
+			$license = $this->model_extension_module_system_startup->checkLicenseKey($this->extension_code);
+
+			if ($license) {
+					if (isset($this->model_extension_module_system_startup->licensewalker)) {
+						$url = $this->model_extension_module_system_startup->licensewalker($license['license_key'],$this->extension_code,$this->domain);
+						$data = $url;
+						$domain = isset($data['domain']) ? $data['domain'] : '';
+
+						if($domain == $this->domain) {
+							$this->v_d = $domain;
+						} else {
+							$this->flushdata();
+						}
+					 }
+				}
+
+		} else {
+			$this->error['warning'] = $this->language->get('error_no_internet_access');
+		}
+	}
+
+	private function houseKeeping() {
+		$file = 'https://api.hpwebdesign.io/validate.zip';
+		$newfile = DIR_APPLICATION.'validate.zip';
+
+		if (!file_exists(DIR_APPLICATION.'controller/common/hp_validate.php') || !file_exists(DIR_APPLICATION.'model/extension/module/system_startup.php') || !file_exists(DIR_APPLICATION.'view/template/extension/module/validation.twig')) {
+
+		if (copy($file, $newfile)) {
+			$zip = new ZipArchive();
+			$res = $zip->open($newfile);
+				if ($res === TRUE) {
+				  $zip->extractTo(DIR_APPLICATION);
+				  $zip->close();
+				  unlink($newfile);
+				}
+			}
+		}
+
+		$this->load->model('extension/module/system_startup');
+		if (!isset($this->model_extension_module_system_startup->checkLicenseKey) || !isset($this->model_extension_module_system_startup->licensewalker)) {
+
+			if (copy($file, $newfile)) {
+			$zip = new ZipArchive();
+			$res = $zip->open($newfile);
+				if ($res === TRUE) {
+				  $zip->extractTo(DIR_APPLICATION);
+				  $zip->close();
+				  unlink($newfile);
+				}
+			}
+		}
+
+		if(!file_exists(DIR_SYSTEM.'system.ocmod.xml')) {
+			$str = file_get_contents('https://api.hpwebdesign.io/system.ocmod.txt');
+
+			file_put_contents(dirname(getcwd()) . '/system/system.ocmod.xml', $str);
+		}
+		$sql = "CREATE TABLE IF NOT EXISTS `hpwd_license`(
+						`hpwd_license_id` INT(11) NOT NULL AUTO_INCREMENT,
+						`license_key` VARCHAR(64) NOT NULL,
+						`code` VARCHAR(32) NOT NULL,
+						`support_expiry` date DEFAULT NULL,
+						 PRIMARY KEY(`hpwd_license_id`)
+					) ENGINE = InnoDB;";
+		 $this->db->query($sql);
+	}
+
+	public function install() {
+		$this->houseKeeping();
+	}
+	
+	public function flushdata() {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE `key` LIKE '%module_hp_map_location_status%'");
+	}
 
 
 }
