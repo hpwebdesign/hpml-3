@@ -1,7 +1,7 @@
 <modification>
   <code>HPMapLocation</code>
   <name><![CDATA[HP Map Location]]></name>
-  <version>1.0.0</version>
+  <version>1.0.0.1</version>
   <link>http://www.hpwebdesign.id</link>
   <author><![CDATA[HP Web Design]]></author>
 
@@ -36,25 +36,22 @@
       }]]></add>
     </operation>
   </file>
-  
+
   <file path="admin/controller/common/header.php">
-<operation error="skip">
-			<search trim="true"><![CDATA[return $this->load->view('common/header', $data);]]></search>
-			<add position="before"><![CDATA[		
+    <operation error="skip">
+      <search trim="true"><![CDATA[return $this->load->view('common/header', $data);]]></search>
+      <add position="before"><![CDATA[
     $this->session->data['hp_ext'][]= array(
             "code" => "hpml",
             "group" => "module_hp_map_location",
             "link" => "extension/module/hp_map_location",
-            "name" => "HP Map Location"); 
-			]]></add>
-		</operation>    
- </file>
+            "name" => "HP Map Location");
+      ]]></add>
+    </operation>
+  </file>
 
   <file path="admin/view/template/sale/order_info.twig">
-      
-      
-          
-     <operation error="skip">
+    <operation error="skip">
       <search   trim="true"><![CDATA[{{ text_order }}</h3>]]></search>
       <add  position="after"><![CDATA[
       {% if(module_hp_map_location_status and show_map) %}
@@ -69,7 +66,7 @@
              <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share Location</a>
              <button id="show-location" class="btn btn-warning btn-sm"><i class="fa fa-map-marker"></i> Customer Location</button>
           </div>
-          
+
                    <div class="modal fade" data-backdrop="static" id="modal-show-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -78,17 +75,17 @@
         <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}  <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share</a></h4>
       </div>
       <div class="modal-body">
-       
+
                        <style type="text/css">
       #map-show-location {
         height: 500px;
       }
     </style>
-    
-         <div id="map-show-location"></div>
-       
 
-     
+         <div id="map-show-location"></div>
+
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -98,20 +95,20 @@
   </div>
 </div>
 
-    
+
           <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
       src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
-         
-	      <script>
-	       function initMap() {
-        const myLatLng = { 
-        lat: {{ map_location_lat }}, lng: {{ map_location_lng }} 
+
+        <script>
+         function initMap() {
+        const myLatLng = {
+        lat: {{ map_location_lat }}, lng: {{ map_location_lng }}
         };
         const map = new google.maps.Map(document.getElementById("map-show-location"), {
-          zoom: 14,
+          zoom: 18,
           center: myLatLng,
         });
 
@@ -127,43 +124,43 @@
 $("#show-location").click(function(){
    $("#modal-show-location").modal('show');
 });
-	      </script>
-	       {% endif %}
-	
+        </script>
+         {% endif %}
+
       ]]></add>
     </operation>
-    
-      </file>
-      <file path="admin/controller/sale/order.php">
+
+  </file>
+  <file path="admin/controller/sale/order.php">
     <operation error="skip">
       <search index="0"   trim="true"><![CDATA[if ($order_info) {]]></search>
       <add  position="after"><![CDATA[
         $this->load->language('extension/module/hp_map_location');
-        $data['map_location_lat'] = $order_info['map_location_lat']; 
+        $data['map_location_lat'] = $order_info['map_location_lat'];
         $data['map_location_lng'] = $order_info['map_location_lng'];
         $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         $data['show_map'] = $data['map_location_lat'] && $data['map_location_lng'];
-        
-        $map_url = 'http://maps.google.com/maps?q=' . $data['map_location_lat'] . ',' . $data['map_location_lng']; 
-        
+
+        $map_url = 'http://maps.google.com/maps?q=' . $data['map_location_lat'] . ',' . $data['map_location_lng'];
+
         $share_location_template = $this->config->get('module_hp_map_location_share_location_template_' . $this->config->get('config_language_id'));
-        
+
         if(empty($share_location_template)){
           $share_location_template = $this->language->get('placeholder_share_location_template');
         }
-        
+
         $share_location_template = rawurlencode(str_replace('{map_location}', $map_url, $share_location_template));
-        
+
         $data['share_location_whatsapp'] = 'https://api.whatsapp.com/send?text='.$share_location_template;
       ]]></add>
     </operation>
-    
 
-    
+
+
   </file>
-  
-   <file path="admin/model/sale/order.php">
+
+  <file path="admin/model/sale/order.php">
     <operation error="skip">
       <search   trim="true"><![CDATA['ip'                      => $order_query->row['ip'],]]></search>
       <add  position="before"><![CDATA[
@@ -171,8 +168,8 @@ $("#show-location").click(function(){
          'map_location_lng'                      => $order_query->row['map_location_lng'],
       ]]></add>
     </operation>
-    
-    
+
+
   </file>
 
   <file path="admin/view/template/setting/setting.twig">
@@ -184,25 +181,25 @@ $("#show-location").click(function(){
       #map {
         height: 500px;
       }
-      
+
        #current-location{
         margin-top:20px;
       }
-      
+
       #pac-input{
       display:none;
         margin-top:10px;
         max-width:300px;
       }
     </style>
-    
+
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
       src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
       defer
     ></script>
-    
-    
+
+
          <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-layout">{{ text_map_location }}</label>
                 <div class="col-sm-10">
@@ -210,16 +207,16 @@ $("#show-location").click(function(){
                  <div id="map"></div>
                    <input value="{{ config_map_location_lat }}" name="config_map_location_lat" type="hidden" value=""/>
                    <input value="{{ config_map_location_lng }}" name="config_map_location_lng" type="hidden" value=""/>
-                   
+
                     <button id="current-location" type="button" class="btn btn-primary">{{ text_current_location }}</button>
                 </div>
         </div>
-        
-      
+
+
         <script>
       function initMap() {
-        const myLatLng = { 
-        lat: {{ config_map_location_lat }}, lng: {{ config_map_location_lng }} 
+        const myLatLng = {
+        lat: {{ config_map_location_lat }}, lng: {{ config_map_location_lng }}
         };
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 18,
@@ -241,12 +238,12 @@ const input = document.getElementById("pac-input");
   // Bias the SearchBox results towards current map's viewport.
   map.addListener("bounds_changed", () => {
     searchBox.setBounds(map.getBounds());
-    
+
   });
-  
-  
-  
-  
+
+
+
+
    let markers = [];
 
   // Listen for the event fired when the user selects a prediction and retrieve
@@ -303,35 +300,35 @@ const input = document.getElementById("pac-input");
         google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
     $("#pac-input").show();
     });
-        
+
         google.maps.event.addListener(map, 'click', function(event) {
             marker.setPosition(event.latLng);
              setValueMap(event.latLng.lat(), event.latLng.lng());
-            
+
         });
-        
+
         marker.addListener('dragend', function(event) {
            setValueMap(event.latLng.lat(), event.latLng.lng());
         });
-        
+
             $("#current-location").click(function(){
              if ("geolocation" in navigator) {
   // check if geolocation is supported/enabled on current browser
   navigator.geolocation.getCurrentPosition(
-  
+
    function success(position) {
 
     let current_location =  {
       lat :  position.coords.latitude,
       lng :  position.coords.longitude
     };
-                 
+
     marker.setPosition(current_location);
-    
+
     map.setCenter(current_location);
-    
+
     setValueMap(position.coords.latitude, position.coords.longitude);
-                 
+
 
    },
   function error(error_message) {
@@ -343,10 +340,10 @@ const input = document.getElementById("pac-input");
   alert('Browser not support geo location');
 }
       });
-    
+
 
       }
-      
+
       function setValueMap(lat, lng){
             $("input[name='config_map_location_lat']").val(lat);
             $("input[name='config_map_location_lng']").val(lng);
@@ -356,48 +353,48 @@ const input = document.getElementById("pac-input");
       ]]></add>
     </operation>
   </file>
-  
-  
-   <file path="admin/controller/setting/setting.php">
+
+
+  <file path="admin/controller/setting/setting.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[$this->response->setOutput($this->load->view('setting/setting', $data));]]></search>
       <add position="before"><![CDATA[
-      
-      
-        
+
+
+
         if (isset($this->request->post['config_map_location_lat'])) {
-			$data['config_map_location_lat'] = $this->request->post['config_map_location_lat'];
-		} elseif ($this->config->has('config_map_location_lat')) {
-			$data['config_map_location_lat'] = $this->config->get('config_map_location_lat');
-		} else {
-			$data['config_map_location_lat'] = '-7.797068';
-		}
-		
-		if (isset($this->request->post['config_map_location_lng'])) {
-			$data['config_map_location_lng'] = $this->request->post['config_map_location_lng'];
-		} elseif ($this->config->has('config_map_location_lng')) {
-			$data['config_map_location_lng'] = $this->config->get('config_map_location_lng');
-		} else {
-			$data['config_map_location_lng'] = '110.370529';
-		}
-		
-      
+      $data['config_map_location_lat'] = $this->request->post['config_map_location_lat'];
+    } elseif ($this->config->has('config_map_location_lat')) {
+      $data['config_map_location_lat'] = $this->config->get('config_map_location_lat');
+    } else {
+      $data['config_map_location_lat'] = '-7.797068';
+    }
+
+    if (isset($this->request->post['config_map_location_lng'])) {
+      $data['config_map_location_lng'] = $this->request->post['config_map_location_lng'];
+    } elseif ($this->config->has('config_map_location_lng')) {
+      $data['config_map_location_lng'] = $this->config->get('config_map_location_lng');
+    } else {
+      $data['config_map_location_lng'] = '110.370529';
+    }
+
+
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[$this->load->language('setting/setting');]]></search>
       <add position="before"><![CDATA[
       $this->load->language('extension/module/hp_map_location');
       ]]></add>
     </operation>
-    
-   
+
+
   </file>
-  
-     <file path="catalog/view/theme/*/template/account/address_form.twig">
+
+  <file path="catalog/view/theme/*/template/account/address_form.twig">
     <operation error="skip">
       <search  trim="true"><![CDATA[</fieldset>]]></search>
       <add position="before"><![CDATA[
@@ -406,43 +403,43 @@ const input = document.getElementById("pac-input");
       #map {
         height: 500px;
       }
-      
+
       #current-location{
         margin-top:20px;
       }
-      
+
       #pac-input{
       display:none;
         margin-top:10px;
         max-width:300px;
       }
     </style>
-    
+
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
        <script
       src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
       defer
     ></script>
-    
+
            <div class="form-group">
             <label class="col-sm-2 control-label">{{ text_map_location }}</label>
-            <div class="col-sm-10"> 
+            <div class="col-sm-10">
             <input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
               <div id="map"></div>
                {% if error_map_location %}
               <div class="text-danger">{{ error_map_location }}</div>
-              {% endif %} 
+              {% endif %}
                    <input value="{{ map_location_lat }}" name="map_location_lat" type="hidden" value=""/>
                    <input value="{{ map_location_lng }}" name="map_location_lng" type="hidden" value=""/>
-                   
+
               <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
             </div>
           </div>
-          
-                 <script>
+
+      <script>
       function initMap() {
-        const myLatLng = { 
-        lat: {{ map_location_lat }}, lng: {{ map_location_lng }} 
+        const myLatLng = {
+        lat: {{ map_location_lat }}, lng: {{ map_location_lng }}
         };
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 18,
@@ -464,12 +461,12 @@ const input = document.getElementById("pac-input");
   // Bias the SearchBox results towards current map's viewport.
   map.addListener("bounds_changed", () => {
     searchBox.setBounds(map.getBounds());
-    
+
   });
-  
-  
-  
-  
+
+
+
+
    let markers = [];
 
   // Listen for the event fired when the user selects a prediction and retrieve
@@ -527,121 +524,120 @@ const input = document.getElementById("pac-input");
     $("#pac-input").show();
     });
         google.maps.event.addListener(map, 'click', function(event) {
-        
+
         console.log(event.latLng);
             marker.setPosition(event.latLng);
              setValueMap(event.latLng.lat(), event.latLng.lng());
-            
+
         });
-        
+
         marker.addListener('dragend', function(event) {
             setValueMap(event.latLng.lat(), event.latLng.lng());
         });
-    
-    
+
+
         $("#current-location").click(function(){
              if ("geolocation" in navigator) {
   // check if geolocation is supported/enabled on current browser
   navigator.geolocation.getCurrentPosition(
-  
+
    function success(position) {
 
     let current_location =  {
       lat :  position.coords.latitude,
       lng :  position.coords.longitude
     };
-                 
+
     marker.setPosition(current_location);
-    
+
     map.setCenter(current_location);
-    
+
     setValueMap(position.coords.latitude,position.coords.longitude);
-                 
+
 
    },
   function error(error_message) {
 
     alert('We are not allowed to access your location, Please change in your settings!')
   });
-} else {
-
-  alert('Browser not support geo location');
-}
+  } else {
+    alert('Browser not support geo location');
+  }
       });
 
       }
-      
+
       function setValueMap(lat, lng){
             $("input[name='map_location_lat']").val(lat);
             $("input[name='map_location_lng']").val(lng);
       }
-      
-  
+
+
     </script>
      {% endif %}
       ]]></add>
     </operation>
   </file>
-  
-  
-   <file path="catalog/controller/account/address.php">
+
+
+  <file path="catalog/controller/account/address.php">
     <operation error="skip">
       <search index="0"  trim="true"><![CDATA[$this->load->model('localisation/country');]]></search>
       <add position="before"><![CDATA[
-      if (isset($this->request->post['map_location_lat']) && 
+      if (isset($this->request->post['map_location_lat']) &&
          ($this->request->post['map_location_lat'] != '' || is_numeric($this->request->post['map_location_lat']))) {
-			$data['map_location_lat'] = $this->request->post['map_location_lat'];
-		}  elseif (!empty($address_info) && $address_info['map_location_lat'] != null) {
-			$data['map_location_lat'] = $address_info['map_location_lat'];
-		} else {
-			$data['map_location_lat'] = '-7.797068';
-		}
-		
-		 if (isset($this->request->post['map_location_lng']) && 
-		 ($this->request->post['map_location_lng'] != '' || is_numeric($this->request->post['map_location_lng']))) {
-			$data['map_location_lng'] = $this->request->post['map_location_lng'];
-		}  elseif (!empty($address_info) && $address_info['map_location_lng'] != null) {
-			$data['map_location_lng'] = $address_info['map_location_lng'];
-		} else {
-			$data['map_location_lng'] = '110.370529';
-		}
-		$this->load->language('extension/module/hp_map_location');
-		  $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
-    $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+      $data['map_location_lat'] = $this->request->post['map_location_lat'];
+    }  elseif (!empty($address_info) && $address_info['map_location_lat'] != null) {
+      $data['map_location_lat'] = $address_info['map_location_lat'];
+    } else {
+      $data['map_location_lat'] = '-7.797068';
+    }
+
+     if (isset($this->request->post['map_location_lng']) &&
+     ($this->request->post['map_location_lng'] != '' || is_numeric($this->request->post['map_location_lng']))) {
+      $data['map_location_lng'] = $this->request->post['map_location_lng'];
+    }  elseif (!empty($address_info) && $address_info['map_location_lng'] != null) {
+      $data['map_location_lng'] = $address_info['map_location_lng'];
+    } else {
+      $data['map_location_lng'] = '110.370529';
+    }
+    $this->load->language('extension/module/hp_map_location');
+      $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+      $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[// Custom field validation]]></search>
       <add position="before"><![CDATA[
      if($this->config->get('module_hp_map_location_status')){
          if (
-         $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) || 
-         $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat']) 
+         $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) ||
+         $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat'])
          ) {
-			$this->error['map_location'] = "Error map location";
-		}
-	}
+      $this->error['map_location'] = "Error map location";
+    }
+  }
       ]]></add>
     </operation>
-    
-    
-         <operation error="skip">
+
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[if (isset($this->error['zone'])) {]]></search>
       <add position="before"><![CDATA[
        if (isset($this->error['map_location'])) {
-			$data['error_map_location'] = $this->error['map_location'];
-		} else {
-			$data['error_map_location'] = '';
-		}
+      $data['error_map_location'] = $this->error['map_location'];
+    } else {
+      $data['error_map_location'] = '';
+    }
       ]]></add>
     </operation>
-    
-    
-   
+
+
+
   </file>
-  
-     <file path="catalog/model/account/address.php">
+
+  <file path="catalog/model/account/address.php">
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA[if (!empty($data['default'])) {]]></search>
       <add position="before"><![CDATA[
@@ -650,7 +646,7 @@ const input = document.getElementById("pac-input");
       }
       ]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search index="0" trim="true"><![CDATA[if (!empty($data['default'])) {]]></search>
       <add position="before"><![CDATA[
@@ -659,52 +655,50 @@ const input = document.getElementById("pac-input");
       }
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search index="0" trim="true"><![CDATA['zone'           => $zone,]]></search>
       <add   position="before"><![CDATA[
          'map_location_lat'     => $address_query->row['map_location_lat'],
-		 'map_location_lng'     => $address_query->row['map_location_lng'],
+     'map_location_lng'     => $address_query->row['map_location_lng'],
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search index="1"  trim="true"><![CDATA['zone'           => $zone,]]></search>
       <add position="before"><![CDATA[
-		 'map_location_lat'     => $result['map_location_lat'] ? $result['map_location_lat']:'-7.797068',
-		 'map_location_lng'     => $result['map_location_lng'] ? $result['map_location_lng']:'110.370529',
+     'map_location_lat'     => $result['map_location_lat'] ? $result['map_location_lat']:'-7.797068',
+     'map_location_lng'     => $result['map_location_lng'] ? $result['map_location_lng']:'110.370529',
       ]]></add>
     </operation>
-    
-    
-     <operation error="skip">
+
+
+    <operation error="skip">
       <search   trim="true"><![CDATA[public function deleteAddress($address_id) {]]></search>
       <add position="before"><![CDATA[
-	public function editMapLocation($address_id, $data) {
+  public function editMapLocation($address_id, $data) {
 
          $this->db->query("UPDATE " . DB_PREFIX . "address SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE address_id  = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
 
-	}
+  }
       ]]></add>
     </operation>
-    
-   
+
+
   </file>
-  
-    <file path="catalog/view/theme/*/template/checkout/shipping_address.twig">
-        
-        
-        
-     <operation error="skip">
+
+  <file path="catalog/view/theme/*/template/checkout/shipping_address.twig">
+
+
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[$('#shipping-new').show();]]></search>
       <add position="after"><![CDATA[
          $('#button-edit-map-location').hide();
       ]]></add>
     </operation>
-    
 
-    
-     <operation error="skip">
+    <operation error="skip">
       <search  trim="true"><![CDATA[{% for address in addresses %}]]></search>
       <add offset="6" position="replace"><![CDATA[
          {% for address in addresses %}
@@ -716,22 +710,22 @@ const input = document.getElementById("pac-input");
       {% endfor %}
       ]]></add>
     </operation>
-    
-    
-      <operation error="skip">
+
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[$('#shipping-new').hide();]]></search>
       <add position="after"><![CDATA[
          $('#button-edit-map-location').show();
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[<div class="pull-right">]]></search>
       <add position="after"><![CDATA[
        {% if (module_hp_map_location_status) %}
-       
+
          <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i class="fa fa-map-marker"></i> {{ button_edit_location }}</button>
-         
+
          <div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -740,17 +734,21 @@ const input = document.getElementById("pac-input");
         <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}</h4>
       </div>
       <div class="modal-body">
-       
-                       <style type="text/css">
+
+    <style type="text/css">
       #edit-map-location {
         height: 500px;
       }
-    </style>
-    
-         <div id="edit-map-location"></div>
-       
 
-     
+      #current-location{
+        margin-top:20px;
+      }
+    </style>
+
+         <div id="edit-map-location"></div>
+
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -771,43 +769,43 @@ const input = document.getElementById("pac-input");
         lat =  $("#shipping-existing").find(":selected").data('lat');
         lng =  $("#shipping-existing").find(":selected").data('lng');
         address_id = $("#shipping-existing").find(":selected").val();
-    
-     
-        const myLatLng = { 
-        lat: lat, 
-        lng: lng, 
+
+
+        const myLatLng = {
+        lat: lat,
+        lng: lng,
         };
         const map = new google.maps.Map(document.getElementById("edit-map-location"), {
           zoom: 18,
           center: myLatLng,
         });
-        
+
          let marker = new google.maps.Marker({
     map: map,
     draggable:true,
     position: myLatLng,
     title:"Your Location"
 });
-        
+
         google.maps.event.addListener(map, 'click', function(event) {
             marker.setPosition(event.latLng);
              setValueMap(event);
-            
+
         });
-        
+
         marker.addListener('dragend', function(event) {
-          
+
            setValueMap(event);
         });
-    
+
 }
 
    function setValueMap(event){
-  
+
            lat = event.latLng.lat();
            lng = event.latLng.lng();
       }
-      
+
       $("#update-map-location").click(function(){
 $("#update-map-location").button('loading');
      let formData = new FormData();
@@ -816,28 +814,28 @@ formData.append(`address_id`, address_id);
 formData.append(`map_location_lat`, lat);
 formData.append(`map_location_lng`, lng);
 
-           
-          
+
+
 fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
             method: "post",
             body: formData
         })
         .then(res => {
-	$("#update-map-location").button('reset');
-	 if(res.status==200){
-	  $('#edit-map-location').before(`
-	   <div class="alert alert-success">
-				<i class="fa fa-check-circle"></i>
-				 {{ text_success_update_map }}
-				<button class="close" data-dismiss="alert" type="button">×</button>
-		</div>
-	  `);
-	  $("#shipping-existing").find(":selected").data('lng',lng);
-	  $("#shipping-existing").find(":selected").data('lat', lat);
-	 }
-		}).catch((err)=>{
-		 	$("#update-map-location").button('reset');
-		});
+  $("#update-map-location").button('reset');
+   if(res.status==200){
+    $('#edit-map-location').before(`
+     <div class="alert alert-success">
+        <i class="fa fa-check-circle"></i>
+         {{ text_success_update_map }}
+        <button class="close" data-dismiss="alert" type="button">×</button>
+    </div>
+    `);
+    $("#shipping-existing").find(":selected").data('lng',lng);
+    $("#shipping-existing").find(":selected").data('lat', lat);
+   }
+    }).catch((err)=>{
+       $("#update-map-location").button('reset');
+    });
 
 
 });
@@ -845,7 +843,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
          {% endif %}
       ]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search  trim="true"><![CDATA[{% for custom_field in custom_fields %}]]></search>
       <add position="before"><![CDATA[
@@ -855,30 +853,31 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         height: 500px;
       }
     </style>
-    
- 
-    
+
+
+
            <div class="form-group required">
             <label class="col-sm-2 control-label">{{ entry_map_location }}</label>
-            <div class="col-sm-10"> 
+            <div class="col-sm-10">
               <div id="input-shipping-map-location"></div>
                {% if error_map_location %}
               <div class="text-danger">{{ error_map_location }}</div>
-              {% endif %} 
+              {% endif %}
                    <input value="-7.797068" name="map_location_lat" type="hidden" value=""/>
                    <input value="110.370529" name="map_location_lng" type="hidden" value=""/>
+            <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
             </div>
           </div>
-    
+
 
  <script>
 
       function initMap() {
-        const myLatLng = { 
-        lat: -7.797068, lng: 110.370529 
+        const myLatLng = {
+        lat: -7.797068, lng: 110.370529
         };
         const map2 = new google.maps.Map(document.getElementById("input-shipping-map-location"), {
-          zoom: 14,
+          zoom: 18,
           center: myLatLng,
         });
 
@@ -888,41 +887,110 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     position: myLatLng,
     title:"{{ text_my_location }}"
 });
-        
+
         google.maps.event.addListener(map2, 'click', function(event) {
             marker2.setPosition(event.latLng);
              setValueMapEdit(event);
-            
+
         });
-        
+
         marker2.addListener('dragend', function(event) {
            setValueMapEdit(event);
         });
-    
+
+        $("#current-location").click(function(){
+          if ("geolocation" in navigator) {
+            // check if geolocation is supported/enabled on current browser
+            navigator.geolocation.getCurrentPosition(
+
+              function success(position) {
+
+                let current_location =  {
+                  lat :  position.coords.latitude,
+                  lng :  position.coords.longitude
+                };
+
+                marker2.setPosition(current_location);
+
+                map2.setCenter(current_location);
+
+                setValueMap(position.coords.latitude,position.coords.longitude);
+
+
+              },
+              function error(error_message) {
+
+                alert('We are not allowed to access your location, Please change in your settings!')
+              });
+          } else {
+
+            alert('Browser not support geo location');
+          }
+        });
+
 
       }
-      
+
       function setValueMapEdit(event){
             $("input[name='map_location_lat']").val(event.latLng.lat());
             $("input[name='map_location_lng']").val(event.latLng.lng());
       }
       initMap();
+
+
+
+        $("#current-location").click(function(){
+          if ("geolocation" in navigator) {
+            // check if geolocation is supported/enabled on current browser
+            navigator.geolocation.getCurrentPosition(
+
+              function success(position) {
+
+                let current_location =  {
+                  lat :  position.coords.latitude,
+                  lng :  position.coords.longitude
+                };
+
+
+                marker2.setPosition(current_location);
+
+                map2.setCenter(current_location);
+
+                setValueMap(position.coords.latitude,position.coords.longitude);
+
+
+              },
+              function error(error_message) {
+
+                alert('We are not allowed to access your location, Please change in your settings!')
+              });
+          } else {
+            alert('Browser not support geo location');
+          }
+        });
+
+        function setValueMap(event){
+
+          lat = event.latLng.lat();
+          lng = event.latLng.lng();
+        }
+
     </script>
 {% endif %}
       ]]></add>
     </operation>
   </file>
-  
-<file path="catalog/view/theme/*/template/checkout/checkout.twig">
+
+  <file path="catalog/view/theme/*/template/checkout/checkout.twig">
     <operation error="skip">
       <search  trim="true"><![CDATA[data: $('#collapse-shipping-address input[type=\'text\'], #collapse-shipping-address input[type=\'date\'], #collapse-shipping-address input[type=\'datetime-local\'], #collapse-shipping-address input[type=\'time\'], #collapse-shipping-address input[type=\'password\'], #collapse-shipping-address input[type=\'checkbox\']:checked, #collapse-shipping-address input[type=\'radio\']:checked, #collapse-shipping-address textarea, #collapse-shipping-address select'),]]></search>
       <add position="replace"><![CDATA[
          data: $('#collapse-shipping-address input[type=\'hidden\'], #collapse-shipping-address input[type=\'text\'], #collapse-shipping-address input[type=\'date\'], #collapse-shipping-address input[type=\'datetime-local\'], #collapse-shipping-address input[type=\'time\'], #collapse-shipping-address input[type=\'password\'], #collapse-shipping-address input[type=\'checkbox\']:checked, #collapse-shipping-address input[type=\'radio\']:checked, #collapse-shipping-address textarea, #collapse-shipping-address select'),
       ]]></add>
     </operation>
-    
-  
-      <operation error="skip">
+
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[<div id="checkout-checkout" class="container">]]></search>
       <add position="after"><![CDATA[
       {% if (module_hp_map_location_status) %}
@@ -934,79 +1002,79 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     {% endif %}
       ]]></add>
     </operation>
-  
+
   </file>
 
-  <file path="catalog/controller/checkout/checkout.php">  
-      <operation error="skip">
+  <file path="catalog/controller/checkout/checkout.php">
+    <operation error="skip">
       <search  trim="true"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
       <add position="after"><![CDATA[
          $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
       ]]></add>
     </operation>
-  
+
   </file>
-  
+
   <file path="catalog/controller/checkout/shipping_address.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[// Custom field validation]]></search>
       <add  position="before"><![CDATA[
-				
-	   if($this->config->get('module_hp_map_location_status')){
+     if($this->config->get('module_hp_map_location_status')) {
          if (
-         $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) || 
-         $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat']) 
+         $this->request->post['map_location_lng'] == '' || !is_numeric($this->request->post['map_location_lng']) ||
+         $this->request->post['map_location_lat'] == '' || !is_numeric($this->request->post['map_location_lat'])
          ) {
-			$json['error']['map_location'] = 'Error map location';
-		}
-	}
+        $json['error']['map_location'] = 'Error map location';
+    }
+  }
       ]]></add>
     </operation>
-    
-     <operation error="skip">
+
+    <operation error="skip">
       <search  trim="true"><![CDATA[$this->response->setOutput($this->load->view('checkout/shipping_address', $data));]]></search>
       <add  position="before"><![CDATA[
-      $this->load->language('extension/module/hp_map_location');
-	   	$data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+      if($this->config->get('module_hp_map_location_status')) {
+        $this->load->language('extension/module/hp_map_location');
+        $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+      }
       ]]></add>
     </operation>
-    
-    
+
   </file>
-  
-   <file path="catalog/controller/checkout/confirm.php">
+
+  <file path="catalog/controller/checkout/confirm.php">
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA[if ($this->cart->hasShipping()) {]]></search>
       <add  position="before"><![CDATA[
-				$order_data['map_location_lat'] = $this->session->data['shipping_address']['map_location_lat'];
-				$order_data['map_location_lng'] = $this->session->data['shipping_address']['map_location_lng'];
+        $order_data['map_location_lat'] = $this->session->data['shipping_address']['map_location_lat'];
+        $order_data['map_location_lng'] = $this->session->data['shipping_address']['map_location_lng'];
       ]]></add>
     </operation>
-    
 
-    
+
+
   </file>
-  
-     <file path="catalog/model/checkout/order.php">
+
+  <file path="catalog/model/checkout/order.php">
     <operation error="skip">
       <search   trim="true"><![CDATA[$order_id = $this->db->getLastId();]]></search>
       <add  position="after"><![CDATA[
       if($this->config->get('module_hp_map_location_status')){
-			  $this->db->query("UPDATE " . DB_PREFIX . "order SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE order_id  = '" . (int)$order_id . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "order SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE order_id  = '" . (int)$order_id . "'");
       }
       ]]></add>
     </operation>
-    
 
-    
+
+
   </file>
-  
-    <file path="catalog/view/theme/*/template/account/{order_info.twig,order_info_hpwd.twig}">
+
+  <file path="catalog/view/theme/*/template/account/{order_info.twig,order_info_hpwd.twig}">
     <operation error="skip">
       <search   trim="true"><![CDATA[{% if comment %}]]></search>
       <add  position="before"><![CDATA[
-      
+
       {% if(module_hp_map_location_status and show_map) %}
       {% if(map_location_lat and map_location_lng) %}
           <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -1015,16 +1083,16 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       defer
     ></script>
           <h3>{{ text_my_location }}</h3>
-	      <div id="map-info" style="margin-bottom:20px;height:300px;">
-	           
-	      </div>
-	      <script>
-	       function initMap() {
-        const myLatLng = { 
-        lat: {{ map_location_lat }}, lng: {{ map_location_lng }} 
+        <div id="map-info" style="margin-bottom:20px;height:300px;">
+
+        </div>
+        <script>
+         function initMap() {
+        const myLatLng = {
+        lat: {{ map_location_lat }}, lng: {{ map_location_lng }}
         };
         const map = new google.maps.Map(document.getElementById("map-info"), {
-          zoom: 14,
+          zoom: 18,
           center: myLatLng,
         });
 
@@ -1035,33 +1103,33 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
 });
 
 }
-	      </script>
-	      {% endif %}
-	       {% endif %}
+        </script>
+        {% endif %}
+         {% endif %}
       ]]></add>
     </operation>
-    
 
-    
+
+
   </file>
-  
-  
-         <file path="catalog/controller/account/order.php">
+
+
+  <file path="catalog/controller/account/order.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[if ($order_info) {]]></search>
       <add  position="after"><![CDATA[
          $this->load->language('extension/module/hp_map_location');
-          $data['map_location_lat'] = $order_info['map_location_lat']; 
+          $data['map_location_lat'] = $order_info['map_location_lat'];
           $data['map_location_lng'] = $order_info['map_location_lng'];
           $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
           $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
           $data['show_map'] = true;
-        
+
       ]]></add>
     </operation>
-    
 
-    
+
+
   </file>
   <file path="catalog/model/account/order.php">
     <operation error="skip">
@@ -1073,5 +1141,5 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       ]]></add>
     </operation>
   </file>
-  
+
 </modification>
