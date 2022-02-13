@@ -394,7 +394,7 @@ const input = document.getElementById("pac-input");
 
   </file>
 
-  <file path="admin/controller/customer/customer.php">
+    <file path="admin/controller/customer/customer.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[function getForm()]]></search>
       <add position="after"><![CDATA[
@@ -415,11 +415,8 @@ const input = document.getElementById("pac-input");
              $this->load->language('extension/module/hp_map_location');
       ]]></add>
     </operation>
-
-
-
-
   </file>
+
 
    <file path="admin/view/template/customer/customer_form.twig">
       <operation error="skip">
@@ -509,11 +506,6 @@ const input = document.getElementById("pac-input");
        {% endif %}
       ]]></add>
     </operation>
-
-
-
-
-
   </file>
 
      <file path="catalog/view/theme/*/template/account/address_form.twig">
