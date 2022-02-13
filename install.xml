@@ -355,6 +355,189 @@ const input = document.getElementById("pac-input");
   </file>
 
 
+  <file path="admin/view/template/localisation/location_form.twig">
+    <operation error="skip">
+      <search trim="true"><![CDATA[<textarea name="comment" rows="5" placeholder="{{ entry_comment }}" id="input-comment" class="form-control">{{ comment }}</textarea>]]></search>
+      <add offset="2" position="after"><![CDATA[
+      {% if(module_hp_map_location_status) %}
+        <style type="text/css">
+      #map {
+        height: 500px;
+      }
+
+       #current-location{
+        margin-top:20px;
+      }
+
+      #pac-input{
+      display:none;
+        margin-top:10px;
+        max-width:300px;
+      }
+    </style>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+       <script
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
+
+
+         <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-layout">{{ text_map_location }}</label>
+                <div class="col-sm-10">
+                <input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
+                 <div id="map"></div>
+                   <input value="{{ config_map_location_lat }}" name="config_map_location_lat" type="hidden" value=""/>
+                   <input value="{{ config_map_location_lng }}" name="config_map_location_lng" type="hidden" value=""/>
+
+                    <button id="current-location" type="button" class="btn btn-primary">{{ text_current_location }}</button>
+                </div>
+        </div>
+
+
+        <script>
+      function initMap() {
+        const myLatLng = {
+        lat: {{ config_map_location_lat }}, lng: {{ config_map_location_lng }}
+        };
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 18,
+          center: myLatLng,
+        });
+
+ let marker = new google.maps.Marker({
+    map: map,
+    draggable:true,
+    position: myLatLng,
+    title:"{{ text_store_location }}"
+});
+
+
+const input = document.getElementById("pac-input");
+  const searchBox = new google.maps.places.SearchBox(input);
+
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener("bounds_changed", () => {
+    searchBox.setBounds(map.getBounds());
+
+  });
+
+
+
+
+   let markers = [];
+
+  // Listen for the event fired when the user selects a prediction and retrieve
+  // more details for that place.
+  searchBox.addListener("places_changed", () => {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    // Clear out the old markers.
+    markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    markers = [];
+
+    // For each place, get the icon, name and location.
+    const bounds = new google.maps.LatLngBounds();
+
+    places.forEach((place) => {
+      if (!place.geometry || !place.geometry.location) {
+        console.log("Returned place contains no geometry");
+        return;
+      }
+
+      const icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25),
+      };
+
+      // Create a marker for each place.
+      markers.push(
+        new google.maps.Marker({
+          map,
+          icon,
+          title: place.name,
+          position: place.geometry.location,
+        })
+      );
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+  });
+
+        google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+    $("#pac-input").show();
+    });
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            marker.setPosition(event.latLng);
+             setValueMap(event.latLng.lat(), event.latLng.lng());
+
+        });
+
+        marker.addListener('dragend', function(event) {
+           setValueMap(event.latLng.lat(), event.latLng.lng());
+        });
+
+            $("#current-location").click(function(){
+             if ("geolocation" in navigator) {
+  // check if geolocation is supported/enabled on current browser
+  navigator.geolocation.getCurrentPosition(
+
+   function success(position) {
+
+    let current_location =  {
+      lat :  position.coords.latitude,
+      lng :  position.coords.longitude
+    };
+
+    marker.setPosition(current_location);
+
+    map.setCenter(current_location);
+
+    setValueMap(position.coords.latitude, position.coords.longitude);
+
+
+   },
+  function error(error_message) {
+
+    alert('We are not allowed to access your location, Please change in your settings!')
+  });
+} else {
+
+  alert('Browser not support geo location');
+}
+      });
+
+
+      }
+
+      function setValueMap(lat, lng){
+            $("input[name='config_map_location_lat']").val(lat);
+            $("input[name='config_map_location_lng']").val(lng);
+      }
+    </script>
+    {% endif %}
+      ]]></add>
+    </operation>
+  </file>
+
+
   <file path="admin/controller/setting/setting.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[$this->response->setOutput($this->load->view('setting/setting', $data));]]></search>
@@ -394,7 +577,7 @@ const input = document.getElementById("pac-input");
 
   </file>
 
-    <file path="admin/controller/customer/customer.php">
+    <file path="admin/controller/{customer/customer.php,localisation/location.php}">
     <operation error="skip">
       <search  trim="true"><![CDATA[function getForm()]]></search>
       <add position="after"><![CDATA[
@@ -402,20 +585,16 @@ const input = document.getElementById("pac-input");
 
           if($data['module_hp_map_location_status']){
 
+             $this->load->language('extension/module/hp_map_location');
+
              $this->document->addScript('https://polyfill.io/v3/polyfill.min.js?features=default');
              $this->document->addScript('https://maps.googleapis.com/maps/api/js?key=' . $this->config->get('module_hp_map_location_api') . '&libraries=places&v=weekly');
              $this->document->addScript('view/javascript/hpml.js');
           }
       ]]></add>
     </operation>
-
-    <operation error="skip">
-      <search index="1,2" trim="true"><![CDATA[$this->load->language('customer/customer');]]></search>
-      <add position="before"><![CDATA[
-             $this->load->language('extension/module/hp_map_location');
-      ]]></add>
-    </operation>
   </file>
+
 
 
    <file path="admin/view/template/customer/customer_form.twig">
@@ -441,14 +620,12 @@ const input = document.getElementById("pac-input");
     </style>
 
      {% endif %}
-
       ]]></add>
     </operation>
     <operation error="skip">
       <search index="6"  trim="true"><![CDATA[<div class="form-group">]]></search>
       <add position="before"><![CDATA[
        {% if(module_hp_map_location_status) %}
-
            <div class="form-group">
             <label class="col-sm-2 control-label">{{ text_map_location }}</label>
             <div class="col-sm-10">
@@ -500,13 +677,13 @@ const input = document.getElementById("pac-input");
       <search trim="true"><![CDATA[$('#tab-general .tab-content').append(html);]]></search>
       <add position="after"><![CDATA[
        {% if(module_hp_map_location_status) %}
-
           initMap(address_row, -7.797068, 110.370529);
 
        {% endif %}
       ]]></add>
     </operation>
   </file>
+
 
      <file path="catalog/view/theme/*/template/account/address_form.twig">
     <operation error="skip">
