@@ -384,7 +384,7 @@ const input = document.getElementById("pac-input");
       if($this->config->get('module_hp_map_location_status')){
             if (isset($this->request->post['map_location_lat'])) {
     			$data['map_location_lat'] = $this->request->post['map_location_lat'];
-    		} elseif (!empty($location_info)) {
+    		} elseif (!empty($location_info['map_location_lat'])) {
     			$data['map_location_lat'] = $location_info['map_location_lat'];
     		} else {
     			$data['map_location_lat'] = '-7.797068';
@@ -392,7 +392,7 @@ const input = document.getElementById("pac-input");
     		
     		if (isset($this->request->post['map_location_lng'])) {
     			$data['map_location_lng'] = $this->request->post['map_location_lng'];
-    		} elseif (!empty($location_info)) {
+    		} elseif (!empty($location_info['map_location_lng'])) {
     			$data['map_location_lng'] = $location_info['map_location_lng'];
     		} else {
     			$data['map_location_lng'] = '110.370529';
