@@ -353,7 +353,54 @@ const input = document.getElementById("pac-input");
       ]]></add>
     </operation>
   </file>
+  
+  
 
+ <file path="admin/model/localisation/location.php">
+    <operation error="skip">
+      <search trim="true"><![CDATA[return $this->db->getLastId();]]></search>
+      <add position="before"><![CDATA[
+      if($this->config->get('module_hp_map_location_status')){
+         $this->db->query("UPDATE " . DB_PREFIX . "location SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE location_id = '" . (int)$this->db->getLastId() . "'");
+      }
+      ]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search trim="true"><![CDATA[editLocation($location_id, $data)]]></search>
+      <add position="after"><![CDATA[
+      if($this->config->get('module_hp_map_location_status')){
+         $this->db->query("UPDATE " . DB_PREFIX . "location SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE location_id = '" . (int)$location_id . "'");
+      }
+      ]]></add>
+    </operation>
+  </file>
+  
+  <file path="admin/controller/localisation/location.php">
+    <operation error="skip">
+      <search trim="true"><![CDATA[if (isset($this->request->post['geocode']))]]></search>
+      <add position="before"><![CDATA[
+      
+      if($this->config->get('module_hp_map_location_status')){
+            if (isset($this->request->post['map_location_lat'])) {
+    			$data['map_location_lat'] = $this->request->post['map_location_lat'];
+    		} elseif (!empty($location_info)) {
+    			$data['map_location_lat'] = $location_info['map_location_lat'];
+    		} else {
+    			$data['map_location_lat'] = '-7.797068';
+    		}
+    		
+    		if (isset($this->request->post['map_location_lng'])) {
+    			$data['map_location_lng'] = $this->request->post['map_location_lng'];
+    		} elseif (!empty($location_info)) {
+    			$data['map_location_lng'] = $location_info['map_location_lng'];
+    		} else {
+    			$data['map_location_lng'] = '110.370529';
+    		}
+	   }
+      ]]></add>
+    </operation>
+  </file>
 
   <file path="admin/view/template/localisation/location_form.twig">
     <operation error="skip">
@@ -370,168 +417,28 @@ const input = document.getElementById("pac-input");
       }
 
       #pac-input{
-      display:none;
+        display:none;
         margin-top:10px;
         max-width:300px;
       }
     </style>
-
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-       <script
-      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
-      defer
-    ></script>
-
 
          <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-layout">{{ text_map_location }}</label>
                 <div class="col-sm-10">
                 <input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
                  <div id="map"></div>
-                   <input value="{{ config_map_location_lat }}" name="config_map_location_lat" type="hidden" value=""/>
-                   <input value="{{ config_map_location_lng }}" name="config_map_location_lng" type="hidden" value=""/>
+                   <input value="{{ map_location_lat }}" name="map_location_lat" type="hidden" value=""/>
+                   <input value="{{ map_location_lng }}" name="map_location_lng" type="hidden" value=""/>
 
                     <button id="current-location" type="button" class="btn btn-primary">{{ text_current_location }}</button>
                 </div>
         </div>
-
-
+        
         <script>
-      function initMap() {
-        const myLatLng = {
-        lat: {{ config_map_location_lat }}, lng: {{ config_map_location_lng }}
-        };
-        const map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 18,
-          center: myLatLng,
-        });
+            initMapStoreLocation("map", {{ map_location_lat }}, {{ map_location_lng }});
+        </script>
 
- let marker = new google.maps.Marker({
-    map: map,
-    draggable:true,
-    position: myLatLng,
-    title:"{{ text_store_location }}"
-});
-
-
-const input = document.getElementById("pac-input");
-  const searchBox = new google.maps.places.SearchBox(input);
-
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  // Bias the SearchBox results towards current map's viewport.
-  map.addListener("bounds_changed", () => {
-    searchBox.setBounds(map.getBounds());
-
-  });
-
-
-
-
-   let markers = [];
-
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place.
-  searchBox.addListener("places_changed", () => {
-    const places = searchBox.getPlaces();
-
-    if (places.length == 0) {
-      return;
-    }
-
-    // Clear out the old markers.
-    markers.forEach((marker) => {
-      marker.setMap(null);
-    });
-    markers = [];
-
-    // For each place, get the icon, name and location.
-    const bounds = new google.maps.LatLngBounds();
-
-    places.forEach((place) => {
-      if (!place.geometry || !place.geometry.location) {
-        console.log("Returned place contains no geometry");
-        return;
-      }
-
-      const icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25),
-      };
-
-      // Create a marker for each place.
-      markers.push(
-        new google.maps.Marker({
-          map,
-          icon,
-          title: place.name,
-          position: place.geometry.location,
-        })
-      );
-      if (place.geometry.viewport) {
-        // Only geocodes have viewport.
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
-      }
-    });
-    map.fitBounds(bounds);
-  });
-
-        google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-    $("#pac-input").show();
-    });
-
-        google.maps.event.addListener(map, 'click', function(event) {
-            marker.setPosition(event.latLng);
-             setValueMap(event.latLng.lat(), event.latLng.lng());
-
-        });
-
-        marker.addListener('dragend', function(event) {
-           setValueMap(event.latLng.lat(), event.latLng.lng());
-        });
-
-            $("#current-location").click(function(){
-             if ("geolocation" in navigator) {
-  // check if geolocation is supported/enabled on current browser
-  navigator.geolocation.getCurrentPosition(
-
-   function success(position) {
-
-    let current_location =  {
-      lat :  position.coords.latitude,
-      lng :  position.coords.longitude
-    };
-
-    marker.setPosition(current_location);
-
-    map.setCenter(current_location);
-
-    setValueMap(position.coords.latitude, position.coords.longitude);
-
-
-   },
-  function error(error_message) {
-
-    alert('We are not allowed to access your location, Please change in your settings!')
-  });
-} else {
-
-  alert('Browser not support geo location');
-}
-      });
-
-
-      }
-
-      function setValueMap(lat, lng){
-            $("input[name='config_map_location_lat']").val(lat);
-            $("input[name='config_map_location_lng']").val(lng);
-      }
-    </script>
     {% endif %}
       ]]></add>
     </operation>
@@ -586,6 +493,7 @@ const input = document.getElementById("pac-input");
           if($data['module_hp_map_location_status']){
 
              $this->load->language('extension/module/hp_map_location');
+             $this->load->language('localisation/location');
 
              $this->document->addScript('https://polyfill.io/v3/polyfill.min.js?features=default');
              $this->document->addScript('https://maps.googleapis.com/maps/api/js?key=' . $this->config->get('module_hp_map_location_api') . '&libraries=places&v=weekly');
