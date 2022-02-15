@@ -64,6 +64,8 @@
           </style>
           <div class="pull-right">
              <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share Location</a>
+             <button id="copy-map" type="button" onclick="copythisMap('{{ map_url }}')" class="btn btn-danger btn-sm"><i class="fa fa-copy"></i> Copy</button>
+             <a target="_blank" href="{{map_url}}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> View</a>
              <button id="show-location" class="btn btn-warning btn-sm"><i class="fa fa-map-marker"></i> Customer Location</button>
           </div>
 
@@ -72,7 +74,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}  <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share</a></h4>
+        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}  
+        <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share</a>
+        <button type="button" onclick="copythisMap2('{{ map_url }}')" class="btn btn-danger btn-sm"><i class="fa fa-copy"></i></button>
+        </h4>
+        
       </div>
       <div class="modal-body">
 
@@ -101,6 +107,8 @@
       src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=&v=weekly"
       defer
     ></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
         <script>
          function initMap() {
@@ -124,6 +132,27 @@
 $("#show-location").click(function(){
    $("#modal-show-location").modal('show');
 });
+
+        function  copythisMap(text) { 
+         
+            var dummy = document.createElement("textarea"); 
+            document.body.appendChild(dummy); 
+            dummy.value = text; 
+            dummy.select(); 
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            toastr.success('Copied to clipboard', '', {timeOut: 500});
+        }
+        
+        function  copythisMap2(text) { 
+            let el = $('<textarea>');
+            $('#modal-show-location').append(el);
+            el.val(text); 
+            el.select(); 
+            document.execCommand("copy");
+            el.remove();
+            toastr.success('Copied to clipboard', '', {timeOut: 500});
+        }
         </script>
          {% endif %}
 
@@ -142,7 +171,7 @@ $("#show-location").click(function(){
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         $data['show_map'] = $data['map_location_lat'] && $data['map_location_lng'];
 
-        $map_url = 'http://maps.google.com/maps?q=' . $data['map_location_lat'] . ',' . $data['map_location_lng'];
+        $data['map_url'] = 'http://maps.google.com/maps?q=' . $data['map_location_lat'] . ',' . $data['map_location_lng'];
 
         $share_location_template = $this->config->get('module_hp_map_location_share_location_template_' . $this->config->get('config_language_id'));
 
@@ -150,7 +179,7 @@ $("#show-location").click(function(){
           $share_location_template = $this->language->get('placeholder_share_location_template');
         }
 
-        $share_location_template = rawurlencode(str_replace('{map_location}', $map_url, $share_location_template));
+        $share_location_template = rawurlencode(str_replace('{map_location}', $data['map_url'], $share_location_template));
 
         $data['share_location_whatsapp'] = 'https://api.whatsapp.com/send?text='.$share_location_template;
       ]]></add>
