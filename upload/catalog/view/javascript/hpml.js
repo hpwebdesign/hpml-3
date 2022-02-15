@@ -87,12 +87,12 @@ function initMap(id, lat, lng) {
 
     google.maps.event.addListener(map, 'click', function (event) {
         maker.setPosition(event.latLng);
-        setValueMapEdit(event);
+        setValueMapEdit(event.latLng.lat(), event.latLng.lng());
 
     });
 
     maker.addListener('dragend', function (event) {
-        setValueMapEdit(event);
+        setValueMapEdit(event.latLng.lat(), event.latLng.lng());
     });
 
     $("#current-location").click(function () {
@@ -111,7 +111,7 @@ function initMap(id, lat, lng) {
 
                     map.setCenter(current_location);
 
-                    setValueMap(position.coords.latitude, position.coords.longitude);
+                    setValueMapEdit(position.coords.latitude, position.coords.longitude);
 
 
                 },
@@ -125,9 +125,9 @@ function initMap(id, lat, lng) {
         }
     });
 
-    function setValueMapEdit(event) {
-        $("input[name='map_location_lat']").val(event.latLng.lat());
-        $("input[name='map_location_lng']").val(event.latLng.lng());
+    function setValueMapEdit(lat, lng) {
+        $("input[name='map_location_lat']").val(lat);
+        $("input[name='map_location_lng']").val(lng);
     }
 
 

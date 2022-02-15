@@ -950,6 +950,7 @@ const input = document.getElementById("pac-input");
 
       </div>
       <div class="modal-footer">
+         <button type="button" class="btn btn-primary current-location pull-left">{{button_current_location}}</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button id="update-map-location" type="button" class="btn btn-primary">{{ button_save_location }}</button>
       </div>
@@ -988,22 +989,53 @@ const input = document.getElementById("pac-input");
 
         google.maps.event.addListener(map, 'click', function(event) {
             marker.setPosition(event.latLng);
-             setValueMap(event);
+             setValueMap(event.latLng.lat(), event.latLng.lng());
 
         });
 
         marker.addListener('dragend', function(event) {
 
-           setValueMap(event);
+           setValueMap(event.latLng.lat(), event.latLng.lng());
         });
+        
+        
+      $(".current-location").click(function () {
+        if ("geolocation" in navigator) {
+            // check if geolocation is supported/enabled on current browser
+            navigator.geolocation.getCurrentPosition(
+
+                function success(position) {
+
+                    let current_location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    marker.setPosition(current_location);
+
+                    map.setCenter(current_location);
+                
+
+                    setValueMap(position.coords.latitude, position.coords.longitude);
+
+
+                },
+                function error(error_message) {
+
+                    alert('We are not allowed to access your location, Please change in your settings!')
+                });
+        } else {
+
+            alert('Browser not support geo location');
+        }
+    });
 
 }
 
-   function setValueMap(event){
-
-           lat = event.latLng.lat();
-           lng = event.latLng.lng();
-      }
+   function setValueMap(lat2, lng2){
+           lat = lat2;
+           lng = lng2;
+    }
 
       $("#update-map-location").click(function(){
 $("#update-map-location").button('loading');
