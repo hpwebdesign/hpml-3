@@ -622,9 +622,56 @@ const input = document.getElementById("pac-input");
   </file>
 
 
-     <file path="catalog/view/theme/*/template/account/address_form.twig">
+<file path="catalog/view/theme/ff_frame/template/account/address_form.twig">
+    <operation error="skip">
+      <search index="8"  trim="true"><![CDATA[<div class="col-12 col-sm-6">]]></search>
+      <add position="before"><![CDATA[
+      {% if(module_hp_map_location_status) %}
+        
+      <style type="text/css">
+      #map {
+        height: 500px;
+      }
+
+      #current-location{
+        margin-top:20px;
+      }
+
+      #pac-input{
+      display:none;
+        margin-top:10px;
+        max-width:300px;
+      }
+    </style>
+          
+          
+        <div class="col-12 col-sm-12">
+          <div class="form-group required">
+            <label for="input-zone">{{ text_map_location }}</label>
+			<input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
+              <div id="map"></div>
+               {% if error_map_location %}
+              <div class="text-danger">{{ error_map_location }}</div>
+              {% endif %}
+                   <input value="{{ map_location_lat }}" name="map_location_lat" type="hidden" value=""/>
+                   <input value="{{ map_location_lng }}" name="map_location_lng" type="hidden" value=""/>
+
+              <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
+          </div>
+		</div>
+          
+          
+          {# map script #}
+          
+      {% endif %}
+     ]]></add>
+    </operation>
+</file>
+
+    <file path="catalog/view/theme/*/template/account/address_form.twig">
     <operation error="skip">
       <search index="2"  trim="true"><![CDATA[<div class="form-group">]]></search>
+      <ignoreif><![CDATA[{# map script #}]]></ignoreif>
       <add position="before"><![CDATA[
        {% if(module_hp_map_location_status) %}
            <style type="text/css">
@@ -643,11 +690,7 @@ const input = document.getElementById("pac-input");
       }
     </style>
 
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-       <script
-      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
-      defer
-    ></script>
+ 
 
            <div class="form-group">
             <label class="col-sm-2 control-label">{{ text_map_location }}</label>
@@ -663,7 +706,23 @@ const input = document.getElementById("pac-input");
               <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
             </div>
           </div>
+          
+          {# map script #}
 
+
+     {% endif %}
+      ]]></add>
+    </operation>
+    
+     <operation error="skip">
+      <search  trim="true"><![CDATA[{# map script #}]]></search>
+      <add position="replace"><![CDATA[
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+       <script
+      src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
+    
       <script>
       function initMap() {
         const myLatLng = {
@@ -802,7 +861,6 @@ const input = document.getElementById("pac-input");
 
 
     </script>
-     {% endif %}
       ]]></add>
     </operation>
   </file>
