@@ -1,7 +1,7 @@
 <modification>
   <name><![CDATA[HP Map Location]]></name>
   <code>HPML</code>
-  <version>1.0.0.1</version>
+  <version>1.0.0.2</version>
   <link>http://hpwebdesign.io</link>
   <author><![CDATA[HP Web Design]]></author>
 
@@ -74,11 +74,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}  
+        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}
         <a target="_blank" href="{{share_location_whatsapp}}" class="btn btn-success btn-sm"><i class="fa fa-share"></i> Share</a>
         <button type="button" onclick="copythisMap2('{{ map_url }}')" class="btn btn-danger btn-sm"><i class="fa fa-copy"></i></button>
         </h4>
-        
+
       </div>
       <div class="modal-body">
 
@@ -133,22 +133,22 @@ $("#show-location").click(function(){
    $("#modal-show-location").modal('show');
 });
 
-        function  copythisMap(text) { 
-         
-            var dummy = document.createElement("textarea"); 
-            document.body.appendChild(dummy); 
-            dummy.value = text; 
-            dummy.select(); 
+        function  copythisMap(text) {
+
+            var dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
             document.execCommand("copy");
             document.body.removeChild(dummy);
             toastr.success('Copied to clipboard', '', {timeOut: 500});
         }
-        
-        function  copythisMap2(text) { 
+
+        function  copythisMap2(text) {
             let el = $('<textarea>');
             $('#modal-show-location').append(el);
-            el.val(text); 
-            el.select(); 
+            el.val(text);
+            el.select();
             document.execCommand("copy");
             el.remove();
             toastr.success('Copied to clipboard', '', {timeOut: 500});
@@ -382,8 +382,8 @@ const input = document.getElementById("pac-input");
       ]]></add>
     </operation>
   </file>
-  
-  
+
+
 
  <file path="admin/model/localisation/location.php">
     <operation error="skip">
@@ -394,7 +394,7 @@ const input = document.getElementById("pac-input");
       }
       ]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search trim="true"><![CDATA[editLocation($location_id, $data)]]></search>
       <add position="after"><![CDATA[
@@ -404,29 +404,29 @@ const input = document.getElementById("pac-input");
       ]]></add>
     </operation>
   </file>
-  
+
   <file path="admin/controller/localisation/location.php">
     <operation error="skip">
       <search trim="true"><![CDATA[if (isset($this->request->post['geocode']))]]></search>
       <add position="before"><![CDATA[
-      
+
       if($this->config->get('module_hp_map_location_status')){
             if (isset($this->request->post['map_location_lat'])) {
-    			$data['map_location_lat'] = $this->request->post['map_location_lat'];
-    		} elseif (!empty($location_info['map_location_lat'])) {
-    			$data['map_location_lat'] = $location_info['map_location_lat'];
-    		} else {
-    			$data['map_location_lat'] = '-7.797068';
-    		}
-    		
-    		if (isset($this->request->post['map_location_lng'])) {
-    			$data['map_location_lng'] = $this->request->post['map_location_lng'];
-    		} elseif (!empty($location_info['map_location_lng'])) {
-    			$data['map_location_lng'] = $location_info['map_location_lng'];
-    		} else {
-    			$data['map_location_lng'] = '110.370529';
-    		}
-	   }
+          $data['map_location_lat'] = $this->request->post['map_location_lat'];
+        } elseif (!empty($location_info['map_location_lat'])) {
+          $data['map_location_lat'] = $location_info['map_location_lat'];
+        } else {
+          $data['map_location_lat'] = '-7.797068';
+        }
+
+        if (isset($this->request->post['map_location_lng'])) {
+          $data['map_location_lng'] = $this->request->post['map_location_lng'];
+        } elseif (!empty($location_info['map_location_lng'])) {
+          $data['map_location_lng'] = $location_info['map_location_lng'];
+        } else {
+          $data['map_location_lng'] = '110.370529';
+        }
+     }
       ]]></add>
     </operation>
   </file>
@@ -463,7 +463,7 @@ const input = document.getElementById("pac-input");
                     <button id="current-location" type="button" class="btn btn-primary">{{ text_current_location }}</button>
                 </div>
         </div>
-        
+
         <script>
             initMapStoreLocation("map", {{ map_location_lat }}, {{ map_location_lng }});
         </script>
@@ -627,7 +627,7 @@ const input = document.getElementById("pac-input");
       <search index="8"  trim="true"><![CDATA[<div class="col-12 col-sm-6">]]></search>
       <add position="before"><![CDATA[
       {% if(module_hp_map_location_status) %}
-        
+
       <style type="text/css">
       #map {
         height: 500px;
@@ -643,12 +643,12 @@ const input = document.getElementById("pac-input");
         max-width:300px;
       }
     </style>
-          
-          
+
+
         <div class="col-12 col-sm-12">
           <div class="form-group required">
             <label for="input-zone">{{ text_map_location }}</label>
-			<input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
+      <input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
               <div id="map"></div>
                {% if error_map_location %}
               <div class="text-danger">{{ error_map_location }}</div>
@@ -658,11 +658,11 @@ const input = document.getElementById("pac-input");
 
               <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
           </div>
-		</div>
-          
-          
+    </div>
+
+
           {# map script #}
-          
+
       {% endif %}
      ]]></add>
     </operation>
@@ -690,7 +690,7 @@ const input = document.getElementById("pac-input");
       }
     </style>
 
- 
+
 
            <div class="form-group">
             <label class="col-sm-2 control-label">{{ text_map_location }}</label>
@@ -706,14 +706,14 @@ const input = document.getElementById("pac-input");
               <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
             </div>
           </div>
-          
+
           {# map script #}
 
 
      {% endif %}
       ]]></add>
     </operation>
-    
+
      <operation error="skip">
       <search  trim="true"><![CDATA[{# map script #}]]></search>
       <add position="replace"><![CDATA[
@@ -722,7 +722,7 @@ const input = document.getElementById("pac-input");
       src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&callback=initMap&libraries=places&v=weekly"
       defer
     ></script>
-    
+
       <script>
       function initMap() {
         const myLatLng = {
@@ -927,8 +927,10 @@ const input = document.getElementById("pac-input");
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA[if (!empty($data['default'])) {]]></search>
       <add position="before"><![CDATA[
-      if($this->config->get('module_hp_map_location_status')){
+      if($this->config->get('module_hp_map_location_status') && isset($data['map_location_lat'] && isset($data['map_location_lng']))){
+          if(!empty($data['map_location_lat']) && !empty($data['map_location_lng']))
          $this->db->query("UPDATE " . DB_PREFIX . "address SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE address_id  = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
+        }
       }
       ]]></add>
     </operation>
@@ -1084,8 +1086,8 @@ const input = document.getElementById("pac-input");
 
            setValueMap(event.latLng.lat(), event.latLng.lng());
         });
-        
-        
+
+
       $(".current-location").click(function () {
         if ("geolocation" in navigator) {
             // check if geolocation is supported/enabled on current browser
@@ -1101,7 +1103,7 @@ const input = document.getElementById("pac-input");
                     marker.setPosition(current_location);
 
                     map.setCenter(current_location);
-                
+
 
                     setValueMap(position.coords.latitude, position.coords.longitude);
 
@@ -1170,7 +1172,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       #shipping-map-location {
         height: 500px;
       }
-      
+
       #pac-input{
         display:none;
         margin-top:10px;
@@ -1197,8 +1199,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
          <script>
             initMap('shipping-map-location', -7.797068, 110.370529);
          </script>
-       
-       
+
+
 
 
 {% endif %}
