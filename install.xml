@@ -859,7 +859,6 @@ const input = document.getElementById("pac-input");
             $("input[name='map_location_lng']").val(lng);
       }
 
-
     </script>
       ]]></add>
     </operation>
@@ -927,10 +926,8 @@ const input = document.getElementById("pac-input");
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA[if (!empty($data['default'])) {]]></search>
       <add position="before"><![CDATA[
-      if($this->config->get('module_hp_map_location_status') && isset($data['map_location_lat'] && isset($data['map_location_lng']))){
-          if(!empty($data['map_location_lat']) && !empty($data['map_location_lng']))
+      if($this->config->get('module_hp_map_location_status')){
          $this->db->query("UPDATE " . DB_PREFIX . "address SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE address_id  = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
-        }
       }
       ]]></add>
     </operation>
@@ -1286,7 +1283,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search   trim="true"><![CDATA[$order_id = $this->db->getLastId();]]></search>
       <add  position="after"><![CDATA[
-      if($this->config->get('module_hp_map_location_status')){
+      if($this->config->get('module_hp_map_location_status') && isset($data['map_location_lat']) && isset($data['map_location_lng']) && !empty($data['map_location_lat']) && !empty($data['map_location_lng'])){
         $this->db->query("UPDATE " . DB_PREFIX . "order SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE order_id  = '" . (int)$order_id . "'");
       }
       ]]></add>
