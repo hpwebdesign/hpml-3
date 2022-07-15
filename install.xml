@@ -952,8 +952,8 @@ const input = document.getElementById("pac-input");
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA['zone'           => $zone,]]></search>
       <add position="before"><![CDATA[
-     'map_location_lat'     => $result['map_location_lat'] ? $result['map_location_lat']:'-7.797068',
-     'map_location_lng'     => $result['map_location_lng'] ? $result['map_location_lng']:'110.370529',
+     'map_location_lat'     => $result['map_location_lat'] ? $result['map_location_lat']:'',
+     'map_location_lng'     => $result['map_location_lng'] ? $result['map_location_lng']:'',
       ]]></add>
     </operation>
 
@@ -1044,7 +1044,18 @@ const input = document.getElementById("pac-input");
   </div>
 </div>
         <script>
-      let lat, lng, address_id;
+         {% if (module_hp_map_location_compulsory) %}
+        var data_lat = $("#shipping-existing").find(":selected").data('lat');
+        var data_lng = $("#shipping-existing").find(":selected").data('lng');
+        if (data_lat == '' || data_lng == '') {
+            $('#shipping-new').before(`<div class="alert alert-danger">
+        <i class="fa fa-info-circle"></i>
+         {{ text_error_map_compulsory }}
+        <button class="close" data-dismiss="alert" type="button">×</button>
+    </div>`);
+        }
+    {% endif %}
+      let lat = -7.797068, lng = 110.370529, address_id;
         $(document).delegate('#button-edit-map-location', 'click', function() {
            $('#modal-edit-location').modal('show');
            initMapEdit();
@@ -1052,8 +1063,12 @@ const input = document.getElementById("pac-input");
 
      function initMapEdit() {
        $('#modal-edit-location .alert-success').remove();
-        lat =  $("#shipping-existing").find(":selected").data('lat');
+       if ($("#shipping-existing").find(":selected").data('lat') != '') {
+        lat = $("#shipping-existing").find(":selected").data('lat');
+        }
+        if ($("#shipping-existing").find(":selected").data('lng') != '') {
         lng =  $("#shipping-existing").find(":selected").data('lng');
+        }
         address_id = $("#shipping-existing").find(":selected").val();
 
 
@@ -1147,14 +1162,17 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         <button class="close" data-dismiss="alert" type="button">×</button>
     </div>
     `);
+    
     $("#shipping-existing").find(":selected").data('lng',lng);
     $("#shipping-existing").find(":selected").data('lat', lat);
+    setTimeout(function(){ $('#modal-edit-location').modal('hide'); }, 2000);
+    
    }
     }).catch((err)=>{
        $("#update-map-location").button('reset');
     });
-
-
+    
+   
 });
             </script>
          {% endif %}
@@ -1187,8 +1205,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
                {% if error_map_location %}
               <div class="text-danger">{{ error_map_location }}</div>
               {% endif %}
-                   <input value="-7.797068" name="map_location_lat" type="hidden" value=""/>
-                   <input value="110.370529" name="map_location_lng" type="hidden" value=""/>
+                   <input value="" name="map_location_lat" type="hidden" value=""/>
+                   <input value="" name="map_location_lng" type="hidden" value=""/>
             <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
             </div>
           </div>
@@ -1206,6 +1224,30 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
   </file>
 
   <file path="catalog/view/theme/*/template/checkout/checkout.twig">
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$(document).delegate('#button-shipping-address', 'click', function() {]]></search>
+      <add position="after"><![CDATA[
+          {% if module_hp_map_location_compulsory %}
+        var shipping_address_type = $('#collapse-shipping-address input[name=\'shipping_address\']').val();
+        console.log(shipping_address_type);
+        if (shipping_address_type == 'existing') {
+        var data_lat = $("#shipping-existing").find(":selected").data('lat');
+        var data_lng = $("#shipping-existing").find(":selected").data('lng');
+        //console.log('lat:'+data_lat+' lng:'+data_lng)
+        if (data_lat == '' || data_lng == '') {
+            $('#shipping-new').before(`<div class="alert alert-danger">
+        <i class="fa fa-info-circle"></i>
+         {{ text_error_map_compulsory }}
+        <button class="close" data-dismiss="alert" type="button">×</button>
+    </div>`);
+    return;
+        }
+        
+        }
+        
+    {% endif %}
+      ]]></add>
+    </operation>
     <operation error="skip">
       <search  trim="true"><![CDATA[data: $('#collapse-shipping-address input[type=\'text\'], #collapse-shipping-address input[type=\'date\'], #collapse-shipping-address input[type=\'datetime-local\'], #collapse-shipping-address input[type=\'time\'], #collapse-shipping-address input[type=\'password\'], #collapse-shipping-address input[type=\'checkbox\']:checked, #collapse-shipping-address input[type=\'radio\']:checked, #collapse-shipping-address textarea, #collapse-shipping-address select'),]]></search>
       <add position="replace"><![CDATA[
@@ -1230,8 +1272,10 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
       <add position="after"><![CDATA[
+        $this->load->language('extension/module/hp_map_location');
          $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+         $data['module_hp_map_location_compulsory'] = $this->config->get('module_hp_map_location_compulsory');
       ]]></add>
     </operation>
 
@@ -1258,6 +1302,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       if($this->config->get('module_hp_map_location_status')) {
         $this->load->language('extension/module/hp_map_location');
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+        $data['module_hp_map_location_compulsory'] = $this->config->get('module_hp_map_location_compulsory');
       }
       ]]></add>
     </operation>

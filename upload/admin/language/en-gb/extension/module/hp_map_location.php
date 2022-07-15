@@ -31,7 +31,8 @@ $_['text_support_content']        = 'Every purchase of our extension is eligible
 $_['entry_status']                     = 'Status';
 $_['entry_map_api']                    = 'Google Map API';
 $_['entry_share_location_template']    = 'Share Location Template';
-
+$_['entry_compulsory']                 = 'Make Compulsory';
+$_['help_compulsory']                  = 'Customer must set map location for each shipping address';
 $_['help_map_api']                     = 'API key for Google Map';
 $_['help_share_location_template']     = 'Share location whatsapp template';
 

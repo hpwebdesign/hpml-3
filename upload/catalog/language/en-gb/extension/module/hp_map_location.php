@@ -9,4 +9,5 @@ $_['button_current_location']     = '<i class="fa fa-map-marker"></i> Get Curren
 
 $_['entry_map_location']          = 'Map Location';
 
-$_['text_success_update_map']     =  'Success update map location!';        
+$_['text_success_update_map']     =  'Success update map location!';
+$_['text_error_map_compulsory']   =  'Please set your map location!';        

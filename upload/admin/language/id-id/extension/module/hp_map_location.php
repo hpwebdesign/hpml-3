@@ -28,7 +28,8 @@ $_['text_support_content']        = 'Setiap pembelian ekstensi kami memenuhi sya
 $_['entry_status']                      = 'Status';
 $_['entry_map_api']                     = 'Google Map API';
 $_['entry_share_location_template']     = 'Templat Bagikan Lokasi';
-
+$_['entry_compulsory']                 = 'Make Compulsory';
+$_['help_compulsory']                  = 'Customer must set map location for each shipping address';
 $_['help_map_api']                      = 'Kunci API untuk Google Map';
 $_['help_share_location_template']      = 'Templat whatsapp bagikan lokasi';
 

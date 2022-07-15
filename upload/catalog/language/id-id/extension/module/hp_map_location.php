@@ -10,4 +10,4 @@ $_['button_current_location']     = '<i class="fa fa-map-marker"></i> Dapatkan L
 $_['entry_map_location']          = 'Lokasi Map';
 
 $_['text_success_update_map']     =  'Berhasil mengubah lokasi map!';       
-
+$_['text_error_map_compulsory']   =  'Please set your map location!';  
