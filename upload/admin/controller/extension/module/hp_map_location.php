@@ -98,6 +98,10 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 				"name" => "share_location_template_" . $language['language_id'],
 				"default" => $this->language->get('placeholder_share_location_template'),
 			];
+			$inputs[] = [
+				"name" => "error_message_" . $language['language_id'],
+				"default" => $this->language->get('placeholder_error_message'),
+			];
 		}
 
 		foreach ($inputs as $input) {

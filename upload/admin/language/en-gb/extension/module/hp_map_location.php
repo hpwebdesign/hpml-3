@@ -35,7 +35,9 @@ $_['entry_compulsory']                 = 'Make Compulsory';
 $_['help_compulsory']                  = 'Customer must set map location for each shipping address';
 $_['help_map_api']                     = 'API key for Google Map';
 $_['help_share_location_template']     = 'Share location whatsapp template';
-
+$_['entry_error_message']              = 'Error Message';
+$_['help_error_message']               = 'Error message when customer haven\'t set their location';
+$_['placeholder_error_message'] = 'Please set your map location';
 $_['placeholder_share_location_template'] = 
 'Customer Location:
 {map_location}

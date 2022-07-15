@@ -1273,9 +1273,11 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       <search  trim="true"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
       <add position="after"><![CDATA[
         $this->load->language('extension/module/hp_map_location');
+        $language_id = $this->config->get('config_language_id');
          $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
          $data['module_hp_map_location_compulsory'] = $this->config->get('module_hp_map_location_compulsory');
+         $data['text_error_map_compulsory'] = $this->config->get('module_hp_map_location_error_message_'.$language_id);
       ]]></add>
     </operation>
 
@@ -1300,9 +1302,11 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       <search  trim="true"><![CDATA[$this->response->setOutput($this->load->view('checkout/shipping_address', $data));]]></search>
       <add  position="before"><![CDATA[
       if($this->config->get('module_hp_map_location_status')) {
+       $language_id = $this->config->get('config_language_id');
         $this->load->language('extension/module/hp_map_location');
         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
         $data['module_hp_map_location_compulsory'] = $this->config->get('module_hp_map_location_compulsory');
+        $data['text_error_map_compulsory'] = $this->config->get('module_hp_map_location_error_message_'.$language_id);
       }
       ]]></add>
     </operation>

@@ -98,7 +98,26 @@
 										</div>
 									</div>
 
-						<div class="form-group">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{entry_error_message}}
+								<span class="help">{{help_error_message}}</span>
+								</label>
+								<div class="col-sm-8">
+									{% for language in languages %}
+										{% set message_value = _context['error_message_'~language.language_id] is defined ? _context['error_message_'~language.language_id] : null %}
+
+										<div class="input-group">
+											<span class="input-group-addon"><img
+														src="language/{{ language.code }}/{{ language.code }}.png"
+														title="{{ language.name }}"/></span>
+											<textarea rows="3" name="error_message_{{ language.language_id }}"
+											          class="form-control"/>{{ message_value }}</textarea>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label" for="input-status">{{entry_share_location_template}}
 								<span class="help">{{help_share_location_template}}</span>
 								</label>

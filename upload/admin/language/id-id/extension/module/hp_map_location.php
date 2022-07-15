@@ -32,7 +32,9 @@ $_['entry_compulsory']                 = 'Make Compulsory';
 $_['help_compulsory']                  = 'Customer must set map location for each shipping address';
 $_['help_map_api']                      = 'Kunci API untuk Google Map';
 $_['help_share_location_template']      = 'Templat whatsapp bagikan lokasi';
-
+$_['entry_error_message']              = 'Error Message';
+$_['help_error_message']               = 'Error message when customer haven\'t set their location';
+$_['placeholder_error_message'] = 'Please set your map location';
 $_['placeholder_share_location_template'] = 
 'Lokasi Customer:
 {map_location}
