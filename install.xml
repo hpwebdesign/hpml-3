@@ -1221,11 +1221,9 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
         <script src="catalog/view/javascript/hpml.js"></script>
-    ></script>
     {% endif %}
       ]]></add>
     </operation>
-
   </file>
 
   <file path="catalog/controller/checkout/checkout.php">
