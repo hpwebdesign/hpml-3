@@ -5,7 +5,7 @@ $_['text_search_location']        = 'Search Location';
 
 $_['button_edit_location']        = 'Edit Map Location';
 $_['button_save_location']        = 'Save Location';
-$_['button_current_location']     = '<i class="fa fa-map-marker"></i> Get Current Location';
+$_['button_current_location']     = '<i style="margin-right:5px;" class="fa fa-map-marker"></i>Get Current Location';
 
 $_['entry_map_location']          = 'Map Location';
 

@@ -1009,9 +1009,14 @@ const input = document.getElementById("pac-input");
       <add position="after"><![CDATA[
        {% if (module_hp_map_location_status) %}
 
-         <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i class="fa fa-map-marker"></i> {{ button_edit_location }}</button>
+         <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i style="margin-right:5px;" class="fa fa-map-marker"></i>{{ button_edit_location }}</button>
 
-         <div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 
+        <script>
+        
+        $("#modal-edit-location").remove();
+        
+         $("#content").prepend(`<div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -1042,8 +1047,9 @@ const input = document.getElementById("pac-input");
       </div>
     </div>
   </div>
-</div>
-        <script>
+</div>`);
+         
+         
          {% if (module_hp_map_location_compulsory) %}
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
