@@ -1233,6 +1233,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[$(document).delegate('#button-shipping-address', 'click', function() {]]></search>
       <add position="after"><![CDATA[
+        $('.alert').remove();
           {% if module_hp_map_location_compulsory %}
         var shipping_address_type = $('#collapse-shipping-address input[name=\'shipping_address\']').val();
         console.log(shipping_address_type);
