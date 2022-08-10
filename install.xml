@@ -1063,6 +1063,7 @@ const input = document.getElementById("pac-input");
     {% endif %}
       let lat = -7.797068, lng = 110.370529, address_id;
         $(document).delegate('#button-edit-map-location', 'click', function() {
+            $('.alert').remove();
            $('#modal-edit-location').modal('show');
            initMapEdit();
         });
