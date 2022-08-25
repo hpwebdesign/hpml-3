@@ -673,6 +673,7 @@ const input = document.getElementById("pac-input");
       <search index="2"  trim="true"><![CDATA[<div class="form-group">]]></search>
       <ignoreif><![CDATA[{# map script #}]]></ignoreif>
       <add position="before"><![CDATA[
+
        {% if(module_hp_map_location_status) %}
            <style type="text/css">
       #map {
@@ -724,6 +725,11 @@ const input = document.getElementById("pac-input");
     ></script>
 
       <script>
+        {% if firstname == '' %}
+        $(document).ready(function(){
+          $("#current-location").trigger('click');
+        });
+        {% endif %}
       function initMap() {
         const myLatLng = {
         lat: -7.797068, lng: 110.370529
@@ -920,6 +926,11 @@ const input = document.getElementById("pac-input");
     ></script>
 
       <script>
+        {% if firstname == '' %}
+        $(document).ready(function(){
+          $("#current-location").trigger('click');
+        });
+        {% endif %}
       function initMap() {
         const myLatLng = {
         lat: -7.797068, lng: 110.370529
