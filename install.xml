@@ -1255,7 +1255,13 @@ const input = document.getElementById("pac-input");
   </div>
 </div>`);
          
-         
+         $(document).ready(function(){
+        var data_lat = $("#shipping-existing").find(":selected").data('lat');
+        var data_lng = $("#shipping-existing").find(":selected").data('lng');
+        if (data_lat == '' || data_lng == '') {
+          $(".current-location").trigger('click');
+          }
+        });
          {% if (module_hp_map_location_compulsory) %}
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
@@ -1267,6 +1273,9 @@ const input = document.getElementById("pac-input");
     </div>`);
         }
     {% endif %}
+
+
+    
       let lat = -7.797068, lng = 110.370529, address_id;
         $(document).delegate('#button-edit-map-location', 'click', function() {
             $('.alert').remove();
