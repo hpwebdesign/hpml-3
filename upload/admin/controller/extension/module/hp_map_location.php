@@ -3,7 +3,7 @@
 class ControllerExtensionModuleHpMapLocation extends Controller
 {
 
-	private $version        = '1.0.0.2';
+	private $version        = '1.0.0.3';
     private $v_d            = '';
     private $extension_code = 'hpml';
     private $error 			= [];

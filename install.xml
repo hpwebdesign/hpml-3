@@ -1,7 +1,7 @@
 <modification>
   <name><![CDATA[HP Map Location]]></name>
   <code>HPML</code>
-  <version>1.0.0.2</version>
+  <version>1.0.0.3</version>
   <link>http://hpwebdesign.io</link>
   <author><![CDATA[HP Web Design]]></author>
 
@@ -732,7 +732,7 @@ const input = document.getElementById("pac-input");
         {% endif %}
       function initMap() {
         const myLatLng = {
-        lat: -7.797068, lng: 110.370529
+        lat: {{ map_location_lat }}, lng: {{ map_location_lng }}
         };
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 18,
@@ -1081,7 +1081,7 @@ const input = document.getElementById("pac-input");
     }  elseif (!empty($address_info) && $address_info['map_location_lat'] != null) {
       $data['map_location_lat'] = $address_info['map_location_lat'];
     } else {
-      $data['map_location_lat'] = '';
+      $data['map_location_lat'] = '-7.797068';
     }
 
      if (isset($this->request->post['map_location_lng']) &&
@@ -1090,7 +1090,7 @@ const input = document.getElementById("pac-input");
     }  elseif (!empty($address_info) && $address_info['map_location_lng'] != null) {
       $data['map_location_lng'] = $address_info['map_location_lng'];
     } else {
-      $data['map_location_lng'] = '';
+      $data['map_location_lng'] = '110.370529';
     }
     $this->load->language('extension/module/hp_map_location');
       $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
@@ -1506,6 +1506,10 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     </operation>
 
   </file>
+  
+  
+  
+  
 
   <file path="catalog/controller/checkout/shipping_address.php">
     <operation error="skip">
