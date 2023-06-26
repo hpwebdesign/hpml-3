@@ -78,6 +78,15 @@ function initMap(row, lat, lng) {
             } else {
                 bounds.extend(place.geometry.location);
             }
+
+            let current_location =  {
+                lat :  place.geometry.location.lat(),
+                lng :  place.geometry.location.lng()
+            };
+        
+            marker.setPosition(current_location);
+        
+            setValueMap(current_location.lat,current_location.lng);
         });
         map.fitBounds(bounds);
     });
@@ -215,6 +224,15 @@ function initMapStoreLocation(id, lat, lng) {
             } else {
                 bounds.extend(place.geometry.location);
             }
+
+            let current_location =  {
+                lat :  place.geometry.location.lat(),
+                lng :  place.geometry.location.lng()
+            };
+        
+            marker.setPosition(current_location);
+        
+            setValueMap(current_location.lat,current_location.lng);
         });
         map.fitBounds(bounds);
     });
