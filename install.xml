@@ -1237,6 +1237,9 @@ const input = document.getElementById("pac-input");
          $('#button-edit-map-location').show();
       ]]></add>
     </operation>
+    
+   
+   
 
     <operation error="skip">
       <search  trim="true"><![CDATA[<div class="pull-right">]]></search>
@@ -1283,22 +1286,31 @@ const input = document.getElementById("pac-input");
   </div>
 </div>`);
          
-         $(document).ready(function(){
         
-        });
-         {% if (module_hp_map_location_compulsory) %}
+
+    
+    
+    
+   {% if (module_hp_map_location_compulsory) %}
+    
+    $(document).delegate('#shipping-existing [name="address_id"]', 'change', function() {
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
-        if (data_lat == '' || data_lng == '') {
+        
+        $('.alert-danger').remove();
+        
+         if (data_lat == '' || data_lng == '') {
             $('#shipping-new').before(`<div class="alert alert-danger">
         <i class="fa fa-info-circle"></i>
          {{ text_error_map_compulsory }}
-        <button class="close" data-dismiss="alert" type="button">×</button>
-    </div>`);
+             <button class="close" data-dismiss="alert" type="button">×</button>
+        </div>`);
         }
+    });
+    
+
+     $('#shipping-existing [name="address_id"]').trigger('change');
     {% endif %}
-
-
     
       let lat = -7.797068, lng = 110.370529, address_id;
         $(document).delegate('#button-edit-map-location', 'click', function() {
@@ -1481,11 +1493,11 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         $('.alert').remove();
           {% if module_hp_map_location_compulsory %}
         var shipping_address_type = $('#collapse-shipping-address input[name=\'shipping_address\']').val();
-        console.log(shipping_address_type);
+        
         if (shipping_address_type == 'existing') {
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
-        //console.log('lat:'+data_lat+' lng:'+data_lng)
+       
         if (data_lat == '' || data_lng == '') {
             $('#shipping-new').before(`<div class="alert alert-danger">
         <i class="fa fa-info-circle"></i>
