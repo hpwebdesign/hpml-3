@@ -1679,5 +1679,192 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       ]]></add>
     </operation>
   </file>
+  
+  <file path="catalog/controller/common/footer.php">
+    <operation error="skip">
+      <search   trim="true"><![CDATA[$data['styles']]]></search>
+      <add  position="after"><![CDATA[
+       $data['modal_hpml'] = $this->load->controller('extension/module/hp_map_location/modalEditMapLocation'); 
+      ]]></add>
+    </operation>
+  </file>
+  
+  <file path="catalog/view/theme/*/template/common/footer.twig">
+    <operation error="skip">
+      <search   trim="true"><![CDATA[</body>]]></search>
+      <add  position="before"><![CDATA[
+       {{ modal_hpml }}
+      ]]></add>
+    </operation>
+  </file>
+
+
+<file path="catalog/controller/extension/total/shipping.php">
+      
+    <operation error="skip">
+      <search  trim="true"><![CDATA[if (!$this->cart->hasProducts()) {]]></search>
+      <add position="before"><![CDATA[
+          $address_id = $this->customer->getAddressId();
+          
+          $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
+          
+          $map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
+          
+
+          
+          if($address_id && (!$map_location_lat || !$map_location_lat)){
+                $this->load->model('account/address');
+          
+                $default_address = $this->model_account_address->getAddress($address_id);
+                
+                if(!empty($default_address)){
+                    $map_location_lat = $default_address['map_location_lat'];
+                    
+                    $map_location_lng = $default_address['map_location_lng'];
+                }
+          }
+          
+          $hide_form = $map_location_lat && $map_location_lng;
+          
+      ]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search trim="true"><![CDATA[$json['error']['postcode']]]></search>
+      <add position="replace"><![CDATA[// $json['error']['postcode']]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search trim="true"><![CDATA[$json['error']['country'] = $this->language->get('error_country');]]></search>
+      <add position="replace"><![CDATA[if(!$hide_form){
+         $json['error']['country'] = $this->language->get('error_country');
+      }]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search trim="true"><![CDATA[$json['error']['zone'] = $this->language->get('error_zone');]]></search>
+      <add position="replace"><![CDATA[if(!$hide_form){
+        $json['error']['zone'] = $this->language->get('error_zone');
+      }]]></add>
+    </operation>
+    
+
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$this->load->view('extension/total/shipping', $data)]]></search>
+      <add position="before"><![CDATA[
+          $address_id = $this->customer->getAddressId();
+          
+          $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
+          
+          $map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
+          
+          if($address_id && (!$map_location_lat || !$map_location_lng)){
+                $this->load->model('account/address');
+          
+                $default_address = $this->model_account_address->getAddress($address_id);
+                
+                if(!empty($default_address)){
+                    $map_location_lat = $default_address['map_location_lat'];
+                    
+                    $map_location_lng = $default_address['map_location_lng'];
+                }
+                
+          }
+          
+          $data['have_coordinate'] = $map_location_lat && $map_location_lng;
+          
+          $data['text_shipping'] = '';
+      ]]></add>
+    </operation>
+    
+
+    
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$this->session->data['shipping_address'] = array(]]></search>
+      <add position="after"><![CDATA[
+          'map_location_lat'     => $map_location_lat,
+          'map_location_lng'     => $map_location_lng,
+      ]]></add>
+    </operation>
+    
+    
+
+  </file>
+  
+  
+  <file path="catalog/controller/checkout/shipping_address.php">
+      
+    <operation error="skip">
+      <search  trim="true"><![CDATA[unset($this->session->data['shipping_method']);]]></search>
+      <add position="replace"><![CDATA[// unset($this->session->data['shipping_method']);]]></add>
+    </operation>
+    
+     <operation error="skip">
+      <search  trim="true"><![CDATA[unset($this->session->data['shipping_methods']);]]></search>
+      <add position="replace"><![CDATA[// unset($this->session->data['shipping_methods']);]]></add>
+    </operation>
+
+  </file>
+  
+   <file path="catalog/view/theme/*/template/extension/total/shipping.twig">
+    <operation error="skip">
+      <search index="2" trim="true"><![CDATA[<div class="form-group required">]]></search>
+      <add position="replace"><![CDATA[<div class="form-group required" style="display:none;">]]></add>
+    </operation>
+    
+     <operation error="skip">
+      <search trim="true"><![CDATA[id="button-quote"]]></search>
+      <add position="replace"><![CDATA[id="button-quote" {% if not have_coordinate %} disabled {% endif %}]]></add>
+    </operation>
+    
+    
+    
+    <operation error="skip">
+      <search index="0,1" trim="true"><![CDATA[<div class="form-group required">]]></search>
+      <add position="replace"><![CDATA[<div class="form-group required" {% if 1 %} style="display:none;" {% endif %}>]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search trim="true"><![CDATA[<div class="form-horizontal">]]></search>
+      <add position="after"><![CDATA[
+     {% if not have_coordinate %} 
+      <style>
+      .alert-set-location{
+         display:flex;
+         margin-bottom: 15px;
+      }
+      
+      .alert-set-location .alert-info{
+         margin: 0 20px 0 0;
+      }
+      
+      @media (max-width: 400px) {
+          .alert-set-location{
+            flex-direction: column;
+          }
+          
+          .alert-set-location .alert-info{
+            width:100%;
+          }
+       }
+      </style>
+      
+      <div class="alert-set-location">
+          <div  class="alert alert-info"><i class="fa fa-info-circle"></i> {{text_shipping_estimate}}</div>
+          <button data-target=".modal-edit-location-cart" data-toggle="modal" type="button" class="btn btn-primary">{{text_set_location}}</button>
+      </div>
+      
+      <script>
+      $('#button-quote').prop('disabled', true);
+      </script>
+      {% endif %}
+      ]]></add>
+    </operation>
+    
+    
+    
+    
+  </file>
+
 
 </modification>

@@ -1,7 +1,10 @@
 <?php
 $_['text_my_location']            = 'Lokasi Saya';
+$_['text_set_coordinate']         = 'Mengatur Kordinat';
+$_['text_set_location']           = 'Mengatur Lokasi';
 $_['text_map_location']           = 'Lokasi Map';
 $_['text_search_location']        = 'Cari Lokasi';
+$_['text_shipping_estimate']      = 'Atur koordinat Anda untuk mendapatkan perkiraan pengiriman';
 
 $_['button_edit_location']        = 'Ubah Lokasi Map';
 $_['button_save_location']        = 'Simpan Lokasi';
