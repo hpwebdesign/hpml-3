@@ -543,6 +543,27 @@ const input = document.getElementById("pac-input");
   </file>
 
 
+   <file path="admin/model/customer/customer.php">
+      <operation error="skip">
+      <search   trim="true"><![CDATA[$address_query->row['address_id'],]]></search>
+      <add position="after"><![CDATA[
+       'map_location_lat'      => isset($address_query->row['map_location_lat']) && !empty($address_query->row['map_location_lat']) ? $address_query->row['map_location_lat'] : -7.797068,
+       'map_location_lng'      => isset($address_query->row['map_location_lng']) && !empty($address_query->row['map_location_lng']) ? $address_query->row['map_location_lng'] : 110.370529,
+      ]]></add>
+    </operation>
+    
+    <operation error="skip">
+      <search   trim="true"><![CDATA[if (isset($address['default'])) {]]></search>
+      <add position="before"><![CDATA[
+       if(isset($address['map_location_lat']) && isset($address['map_location_lng'])){
+          $this->db->query("UPDATE " . DB_PREFIX . "address SET map_location_lat = '" . $this->db->escape($address['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($address['map_location_lng']) . "' WHERE address_id = '" . (int)$this->db->getLastId() . "'");
+       }
+      ]]></add>
+    </operation>
+    
+    
+    
+   </file>
 
    <file path="admin/view/template/customer/customer_form.twig">
       <operation error="skip">
