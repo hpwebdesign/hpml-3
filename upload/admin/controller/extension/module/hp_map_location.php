@@ -258,8 +258,8 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 		$newfile = DIR_APPLICATION.'validate.zip';
 
 		if (!file_exists(DIR_APPLICATION.'controller/common/hp_validate.php') || !file_exists(DIR_APPLICATION.'model/extension/module/system_startup.php') || !file_exists(DIR_APPLICATION.'view/template/extension/module/validation.twig')) {
-
-		if (copy($file, $newfile)) {
+			$file = $this->curl_get_file_contents($file);
+			if (file_put_contents($file, $newfile)) {
 			$zip = new ZipArchive();
 			$res = $zip->open($newfile);
 				if ($res === TRUE) {
@@ -272,8 +272,8 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 		$this->load->model('extension/module/system_startup');
 		if (!isset($this->model_extension_module_system_startup->checkLicenseKey) || !isset($this->model_extension_module_system_startup->licensewalker)) {
-
-			if (copy($file, $newfile)) {
+			$file = $this->curl_get_file_contents($file);
+			if (file_put_contents($file, $newfile)) {
 			$zip = new ZipArchive();
 			$res = $zip->open($newfile);
 				if ($res === TRUE) {
@@ -285,7 +285,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 		}
 
 		if(!file_exists(DIR_SYSTEM.'system.ocmod.xml')) {
-			$str = file_get_contents('https://api.hpwebdesign.io/system.ocmod.txt');
+			$str = $this->curl_get_file_contents('https://api.hpwebdesign.io/system.ocmod.txt');
 
 			file_put_contents(dirname(getcwd()) . '/system/system.ocmod.xml', $str);
 		}
@@ -307,5 +307,15 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 		$this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE `key` LIKE '%module_hp_map_location_status%'");
 	}
 
+	private function curl_get_file_contents($URL)
+	{
+		$c = curl_init();
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($c, CURLOPT_URL, $URL);
+		$contents = curl_exec($c);
+		curl_close($c);
 
+		if ($contents) return $contents;
+		else return FALSE;
+	}
 }
