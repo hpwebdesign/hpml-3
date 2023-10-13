@@ -7,10 +7,14 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 			if($this->customer->isLogged() && !empty($this->request->post['address_id'])){
 				$this->model_account_address->editMapLocation($this->request->post['address_id'], $this->request->post);
-			}else{
-				$this->session->data['shipping_address']['map_location_lat'] = $this->request->post['map_location_lat'];
-				$this->session->data['shipping_address']['map_location_lng'] = $this->request->post['map_location_lng'];
 			}
+
+            $this->session->data['shipping_address']['map_location_lat'] = $this->request->post['map_location_lat'];
+            $this->session->data['shipping_address']['map_location_lng'] = $this->request->post['map_location_lng'];
+
+            $this->session->data['shipping_address_hpwd']['map_location_lat'] = $this->request->post['map_location_lat'];
+            $this->session->data['shipping_address_hpwd']['map_location_lng'] = $this->request->post['map_location_lng'];
+			
 
 			if($this->config->get('module_marketplace_status')) {
 				$this->session->data['lat'] = $this->request->post['map_location_lat'];
@@ -32,7 +36,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 
 		$data = array();
 
-		$route = $this->request->get['route'];
+		$route = $this->request->get['route'] ?? '';
 
 		
 
@@ -49,9 +53,9 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 			$map_location_lat = 0;
 
 			
-			$map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
+			$map_location_lat = $this->session->data['shipping_address_hpwd']['map_location_lat'] ?? 0;
 
-			$map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
+			$map_location_lng = $this->session->data['shipping_address_hpwd']['map_location_lng'] ?? 0;
 
 			$checkout_page = $route == 'checkout/checkout' && $this->customer->isLogged();
 
@@ -65,13 +69,12 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 	
 					$default_address = $this->model_account_address->getAddress($address_id);
 	
-					if (empty($default_address)) {
-						return '';
-					}
-					
-					$map_location_lat = $default_address['map_location_lat'];
-	
-					$map_location_lng = $default_address['map_location_lng'];	
+					if (!empty($default_address)) {
+                        $map_location_lat = $default_address['map_location_lat'];
+        
+                        $map_location_lng = $default_address['map_location_lng'];	
+
+                    }
 				}
 			}
 
