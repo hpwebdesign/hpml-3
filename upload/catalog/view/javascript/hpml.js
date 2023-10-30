@@ -1,4 +1,10 @@
 function initMap(id, lat, lng) {
+
+    if(window['_QuickCheckout']){
+        window['_QuickCheckout'].$data.order_data.payment_map_location_lng = lng;
+        window['_QuickCheckout'].$data.order_data.payment_map_location_lat = lat;
+    }
+    
     const myLatLng = {
         lat: lat,
         lng: lng
@@ -137,6 +143,11 @@ function initMap(id, lat, lng) {
     function setValueMapEdit(lat, lng) {
         $("input[name='map_location_lat']").val(lat);
         $("input[name='map_location_lng']").val(lng);
+
+        if(window['_QuickCheckout']){
+            window['_QuickCheckout'].$data.order_data.payment_map_location_lng = lng;
+            window['_QuickCheckout'].$data.order_data.payment_map_location_lat = lat;
+        }
     }
 
 

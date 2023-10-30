@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Hp Map Location Journal3 QC</name>
+  <code>hpmlqc</code>
+  <version>1.0.0</version>
+  <author>Hp Web Design</author>
+  <link>https://hpwebdesign.id</link>
+  <file path="catalog/view/theme/journal3/template/journal3/checkout/address.twig">
+    <operation error="skip">
+      <search trim="true"><![CDATA[<div v-if="('{{ type }}' === 'payment') && shipping_required"]]></search>
+      <add position="before"><![CDATA[
+      {% if (module_hp_map_location_status and type == 'payment') %}
+           <div style="display:none;" class="input-map">
+            <label class="control-label" for="input-{{ type }}-map-location">{{ entry_map_location }}</label>
+              <input id="pac-input" class="form-control" type="text" placeholder="{{text_search_location}}"/>
+              <div id="{{ type }}-map-location"></div>
+               <span class="text-danger" v-if="error && error.{{ type }}_map_location" v-html="error.{{ type }}_map_location"></span>
+                   <input value="" name="map_location_lat" type="hidden" value=""/>
+                   <input value=""  name="map_location_lng" type="hidden" value=""/>
+            <button id="current-location" type="button" class="btn btn-primary">{{button_current_location}}</button>
+          </div>
+          
+          
+          <div style="display:none;" class="form-group input-edit-map">
+            <label class="control-label"></label>
+           <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i style="margin-right:5px;" class="fa fa-map-marker"></i>{{ button_edit_location }}</button>
+         </div>
+         
+    {% endif %}
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search trim="true"><![CDATA[v-bind:value="address.address_id"]]></search>
+      <add position="replace"><![CDATA[v-bind:value="address.address_id" v-bind:data-lat="address.map_location_lat" v-bind:data-lng="address.map_location_lng"]]></add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/journal3/template/journal3/checkout/checkout.twig">
+    <operation error="skip">
+      <search trim="true"><![CDATA[{{ footer }}]]></search>
+      <add position="before"><![CDATA[
+       {% if (module_hp_map_location_status) %}
+        <style type="text/css">
+      #shipping-map-location {
+        height: 500px;
+        weight: 100%;
+      }
+      #payment-map-location {
+        height: 500px;
+        weight: 100%;
+      }
+
+      #pac-input{
+        display:none;
+        margin-top:10px;
+        max-width:300px;
+      }
+    </style>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
+        <script src="catalog/view/javascript/hpml.js"></script>
+         <script>
+         
+         console.log($('.payment-address input[type="radio"]').length);
+         
+             
+            
+             
+             
+             $(document).on('change', '.payment-address input[type="radio"]', function(){
+               
+               
+                let val = $('.payment-address input[type="radio"]').val();
+                
+                if(window['_QuickCheckout']){
+                  val = window['_QuickCheckout'].$data.payment_address_type;
+                }
+            
+                
+                setTimeout(function(){
+                
+                if(val == 'existing'){
+                  $('.input-map').hide();
+                  $('.input-edit-map').show();
+                }else {
+                  $('.input-map').show();
+                  $('.input-edit-map').hide();
+                }
+                 
+                 initMap('payment-map-location', -7.797068, 110.370529);
+                },100);
+             });
+             
+             
+             setTimeout(function(){
+             
+                 if(!$('.payment-address input[type="radio"]').length){
+                    $('.input-map').show();
+                    $('.input-edit-map').hide();
+                 }else{
+                   $('.payment-address input[type="radio"]').trigger('change');
+                 }
+  
+                 
+                 initMap('payment-map-location', -7.797068, 110.370529);
+                 
+             },1000);
+             
+             
+
+         </script>
+         
+         
+            <script>
+        
+        $("#modal-edit-location").remove();
+        
+         $("#content").prepend(`<div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{ text_map_location }}</h4>
+      </div>
+      <div class="modal-body">
+
+    <style type="text/css">
+      #edit-map-location {
+        height: 500px;
+      }
+
+      #current-location{
+        margin-top:20px;
+      }
+    </style>
+
+         <div id="edit-map-location"></div>
+
+
+
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-primary current-location pull-left">{{button_current_location}}</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="update-map-location" type="button" class="btn btn-primary">{{ button_save_location }}</button>
+      </div>
+    </div>
+  </div>
+</div>`);
+         
+         
+         {% if (module_hp_map_location_compulsory) %}
+        var data_lat = $("#payment-existing").find(":selected").data('lat');
+        var data_lng = $("#payment-existing").find(":selected").data('lng');
+        if (data_lat == '' || data_lng == '') {
+            $('#input-shipping-address').after(`<span class="alert alert-danger">
+        <i class="fa fa-info-circle"></i>
+         {{ text_error_map_compulsory }}
+        <button class="close" data-dismiss="alert" type="button">×</button>
+    </div>`);
+        }
+    {% endif %}
+      let lat = -7.797068, lng = 110.370529, address_id;
+        $(document).delegate('#button-edit-map-location', 'click', function() {
+            $('.alert').remove();
+           $('#modal-edit-location').modal('show');
+           initMapEdit();
+        });
+
+     function initMapEdit() {
+       $('#modal-edit-location .alert-success').remove();
+       if ($("#payment-existing").find(":selected").data('lat') != '') {
+        lat = $("#payment-existing").find(":selected").data('lat');
+        }
+        if ($("#payment-existing").find(":selected").data('lng') != '') {
+        lng =  $("#payment-existing").find(":selected").data('lng');
+        }
+        address_id = $("#payment-existing").find(":selected").val();
+
+
+        const myLatLng = {
+        lat: lat,
+        lng: lng,
+        };
+        const map = new google.maps.Map(document.getElementById("edit-map-location"), {
+          zoom: 18,
+          center: myLatLng,
+        });
+        
+
+         let marker = new google.maps.Marker({
+    map: map,
+    draggable:true,
+    position: myLatLng,
+    title:"Your Location"
+});
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            marker.setPosition(event.latLng);
+             setValueMap(event.latLng.lat(), event.latLng.lng());
+
+        });
+
+        marker.addListener('dragend', function(event) {
+
+           setValueMap(event.latLng.lat(), event.latLng.lng());
+        });
+
+
+      $(".current-location").click(function () {
+        if ("geolocation" in navigator) {
+            // check if geolocation is supported/enabled on current browser
+            navigator.geolocation.getCurrentPosition(
+
+                function success(position) {
+
+                    let current_location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    marker.setPosition(current_location);
+
+                    map.setCenter(current_location);
+
+
+                    setValueMap(position.coords.latitude, position.coords.longitude);
+
+
+                },
+                function error(error_message) {
+
+                    alert('We are not allowed to access your location, Please change in your settings!')
+                });
+        } else {
+
+            alert('Browser not support geo location');
+        }
+    });
+
+}
+
+   function setValueMap(lat2, lng2){
+           lat = lat2;
+           lng = lng2;
+    }
+
+      $("#update-map-location").click(function(){
+$("#update-map-location").button('loading');
+     let formData = new FormData();
+
+formData.append(`address_id`, address_id);
+formData.append(`map_location_lat`, lat);
+formData.append(`map_location_lng`, lng);
+
+
+
+fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
+            method: "post",
+            body: formData
+        })
+        .then(res => {
+  $("#update-map-location").button('reset');
+   if(res.status==200){
+    $('#edit-map-location').before(`
+     <div class="alert alert-success">
+        <i class="fa fa-check-circle"></i>
+         {{ text_success_update_map }}
+        <button class="close" data-dismiss="alert" type="button">×</button>
+    </div>
+    `);
+    
+    $("#payment-existing").find(":selected").data('lng',lng);
+    $("#payment-existing").find(":selected").data('lat', lat);
+    setTimeout(function(){ $('#modal-edit-location').modal('hide'); }, 2000);
+    
+   }
+    }).catch((err)=>{
+       $("#update-map-location").button('reset');
+    });
+    
+   
+});
+            </script>
+   
+    {% endif %}
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/controller/journal3/checkout.php">
+    <operation error="skip">
+      <search  trim="true"><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[
+         $this->load->language('extension/module/hp_map_location');
+         $language_id = $this->config->get('config_language_id');
+         $data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+         $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+         
+         $data['module_hp_map_location_compulsory'] = $this->config->get('module_hp_map_location_compulsory');
+         $data['text_error_map_compulsory'] = $this->config->get('module_hp_map_location_error_message_'.$language_id);
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$data['shipping_address_block'] = $this->renderView('journal3/checkout/address', array(]]></search>
+      <add position="after"><![CDATA[
+        'module_hp_map_location_status'                  => $this->config->get('module_hp_map_location_status'),
+        'module_hp_map_location_compulsory'                  => $this->config->get('module_hp_map_location_compulsory'),
+        'text_error_map_compulsory'                  => $this->config->get('module_hp_map_location_error_message_'.$language_id),
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$data['payment_address_block'] = $this->renderView('journal3/checkout/address', array(]]></search>
+      <add position="after"><![CDATA[
+        'module_hp_map_location_status'                  => $this->config->get('module_hp_map_location_status'),
+        'module_hp_map_location_compulsory'                  => $this->config->get('module_hp_map_location_compulsory'),
+        'text_error_map_compulsory'                  => $this->config->get('module_hp_map_location_error_message_'.$language_id),
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[array('firstname', 'lastname', 'email',]]></search>
+      <add position="replace"><![CDATA[array('firstname', 'lastname', 'email','map_location_lat','map_location_lng',]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[if ($this->journal3->settings->get('quickCheckoutAddressCompanyField') === 'required') {]]></search>
+      <add position="before" offset="1"><![CDATA[
+      // HPWD HPML
+        if($this->config->get('module_hp_map_location_status')) {
+         if (
+         (utf8_strlen(trim(Arr::get($this->session->data, $type . '_address.map_location_lng'))) < 1) || !is_numeric(Arr::get($this->session->data, $type . '_address.map_location_lng')) ||
+          (utf8_strlen(trim(Arr::get($this->session->data, $type . '_address.map_location_lat'))) < 1) || !is_numeric(Arr::get($this->session->data, $type . '_address.map_location_lat'))
+         ) {
+        $error[$type . '_map_location'] = 'Error map location';
+        }
+        }
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/model/journal3/checkout.php">
+
+    <operation error="skip">
+      <search  trim="true"><![CDATA[if (Arr::get($this->request->get, 'confirm') !== 'true')]]></search>
+      <add position="before"><![CDATA[
+       if($this->config->get('module_hp_map_location_status')){
+            $this->session->data['shipping_address']['map_location_lng'] = $this->session->data['payment_address']['map_location_lng'];
+            $this->session->data['shipping_address']['map_location_lat'] = $this->session->data['payment_address']['map_location_lat'];
+       }
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[public static $ADDRESS_FIELDS = array(]]></search>
+      <add position="after"><![CDATA[
+        'map_location_lng'      => '',
+		'map_location_lat'       => '',
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search  trim="true"><![CDATA[$address_id = $this->db->getLastId();]]></search>
+      <add position="after"><![CDATA[
+        if($this->config->get('module_hp_map_location_status')){
+         $this->db->query("UPDATE " . DB_PREFIX . "address SET map_location_lat = '" . $this->db->escape($data['map_location_lat']) . "', map_location_lng = '" . $this->db->escape($data['map_location_lng']) . "' WHERE address_id  = '" . (int)$address_id . "'");
+      }
+      ]]></add>
+    </operation>
+    </file>
+    <file path="catalog/model/journal3/order.php">
+    <operation error="skip">
+      <search  trim="true"><![CDATA[shipping_code = '" . $this->db->escape($data['shipping_code']) . "',]]></search>
+      <add position="after"><![CDATA[
+        map_location_lat = '" . $this->db->escape($data['shipping_map_location_lat']) . "',
+        map_location_lng = '" . $this->db->escape($data['shipping_map_location_lng']) . "',
+      ]]></add>
+    </operation>
+    </file>
+</modification>

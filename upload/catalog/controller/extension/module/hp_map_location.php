@@ -57,40 +57,27 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 
 			$map_location_lng = $this->session->data['shipping_address_hpwd']['map_location_lng'] ?? 0;
 
-			$checkout_page = $route == 'checkout/checkout' && $this->customer->isLogged();
+			$checkout_page = $route == 'checkout/checkout';
 
-			$cart_page = $route == 'checkout/cart'  && $this->customer->isLogged() && (!$map_location_lat || !$map_location_lat);
+			$cart_page = $route == 'checkout/cart';
 
 			if($checkout_page || $cart_page){
-				$address_id = $this->customer->getAddressId();
+				$data['have_coordinate'] = $map_location_lat && $map_location_lng;
 
-				if ($address_id) {
-					$this->load->model('account/address');
+				if(!$data['have_coordinate']){
+					$data['module_id'] = rand(1, 100000);
 	
-					$default_address = $this->model_account_address->getAddress($address_id);
+					$data['cart_page'] =  $route == 'checkout/cart';
 	
-					if (!empty($default_address)) {
-                        $map_location_lat = $default_address['map_location_lat'];
-        
-                        $map_location_lng = $default_address['map_location_lng'];	
-
-                    }
+					$data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
+	
+					$data['address_id'] = $address_id ?? 0;
+	
+					return $this->load->view('extension/module/modal_edit_map_location', $data);
 				}
 			}
 
-			$data['have_coordinate'] = $map_location_lat && $map_location_lng;
-
-			if(!$data['have_coordinate']){
-				$data['module_id'] = rand(1, 100000);
-
-				$data['cart_page'] =  $route == 'checkout/cart';
-
-				$data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
-
-				$data['address_id'] = $address_id ?? 0;
-
-				return $this->load->view('extension/module/modal_edit_map_location', $data);
-			}
+		
 
 		}
 	}
