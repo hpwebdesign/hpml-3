@@ -4,9 +4,9 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 {
 
 	private $version        = '1.0.0.3';
-    private $v_d            = '';
-    private $extension_code = 'hpml';
-    private $error 			= [];
+	private $v_d            = '';
+	private $extension_code = 'hpml';
+	private $error 			= [];
 	private $domain 		= '';
 
 	public function index(){
@@ -18,11 +18,11 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 		$this->rightman();
 
-        if ($this->domain != $this->v_d) {
-            $this->storeAuth();
-        } else {
-            $this->setting();
-        }
+		if ($this->domain != $this->v_d) {
+			$this->storeAuth();
+		} else {
+			$this->setting();
+		}
 	}
 
 	private function setting() {
@@ -88,7 +88,12 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 				"name" => "api",
 				"default" => '',
 			],
+			[
+				"name" => "force_map",
+				"default" => 0,
+			],
 		];
+
 		$this->load->model('localisation/language');
 
 		$data['languages'] = $this->model_localisation_language->getLanguages();
@@ -179,19 +184,19 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 
 
 
-    private function internetAccess()
-    {
-        return true;
-    }
+	private function internetAccess()
+	{
+		return true;
+	}
 
-    public function curlcheck()
-    {
-        return in_array('curl', get_loaded_extensions()) ? true : false;
-    }
+	public function curlcheck()
+	{
+		return in_array('curl', get_loaded_extensions()) ? true : false;
+	}
 
 
 
-    public function storeAuth() {
+	public function storeAuth() {
 		$data['curl_status'] = $this->curlcheck();
 		$data['extension_code'] = $this->extension_code;
 		$data['user_token'] = $this->session->data['user_token'];

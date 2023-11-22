@@ -6,9 +6,9 @@
 				<h1>{{ heading_title }}</h1>
 				<ul class="breadcrumb">
 					{% for breadcrumb in breadcrumbs %}
-						<li>
-							<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
-						</li>
+					<li>
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
 					{% endfor %}
 				</ul>
 			</div>
@@ -17,19 +17,19 @@
 
 
 	<div class="container-fluid">
-	    {% if error_warning %}
-			<div class="alert alert-danger">
-				<i class="fa fa-exclamation-circle"></i>
-				{{ error_warning }}
-				<button class="close" data-dismiss="alert" type="button">&times;</button>
-			</div>
+		{% if error_warning %}
+		<div class="alert alert-danger">
+			<i class="fa fa-exclamation-circle"></i>
+			{{ error_warning }}
+			<button class="close" data-dismiss="alert" type="button">&times;</button>
+		</div>
 		{% endif %}
 		{% if success %}
-			<div class="alert alert-success">
-				<i class="fa fa-check-circle"></i>
-				{{ success }}
-				<button class="close" data-dismiss="alert" type="button">&times;</button>
-			</div>
+		<div class="alert alert-success">
+			<i class="fa fa-check-circle"></i>
+			{{ success }}
+			<button class="close" data-dismiss="alert" type="button">&times;</button>
+		</div>
 		{% endif %}
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -53,7 +53,7 @@
 								<i class="fa fa-cog fa-fw"></i>
 								{{ tab_general }}</a>
 						</li>
-							<li >
+						<li >
 							<a data-toggle="tab" href="#tab-help">
 								<i class="fa fa-question-circle"></i>
 								{{ tab_help }}</a>
@@ -63,14 +63,14 @@
 
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab-general">
-						 
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label">{{ entry_status }}</label>
 								<div class="col-sm-10">
-								<input type="checkbox" name="status" data-control="checkbox" value="1"
-									       data-off-label="{{ text_no }}"
-									       data-on-label="{{ text_yes }}" {% if status %} checked="checked" {% endif %} />
-								
+									<input type="checkbox" name="status" data-control="checkbox" value="1"
+										   data-off-label="{{ text_no }}"
+										   data-on-label="{{ text_yes }}" {% if status %} checked="checked" {% endif %} />
+
 								</div>
 							</div>
 
@@ -79,82 +79,95 @@
 									<span class="help">{{ help_compulsory }}</span>
 								</label>
 								<div class="col-sm-10">
-								<input type="checkbox" name="compulsory" data-control="checkbox" value="1"
-									       data-off-label="{{ text_no }}"
-									       data-on-label="{{ text_yes }}" {% if compulsory %} checked="checked" {% endif %} />
-								
+									<input type="checkbox" name="compulsory" data-control="checkbox" value="1"
+										   data-off-label="{{ text_no }}"
+										   data-on-label="{{ text_yes }}" {% if compulsory %} checked="checked" {% endif %} />
+
 								</div>
 							</div>
 
-					   	<div class="form-group required">
-										<label class="col-sm-2 control-label" for="api">
-                      {{ entry_map_api }}
-											<span class="help">
-                      {{ help_map_api }}
-											</span>
-										</label>
-										<div class="col-sm-10">
-											<input name="api" type="text" value="{{ api }}"  class="form-control">
-										</div>
-									</div>
-
 							<div class="form-group">
-								<label class="col-sm-2 control-label" for="input-status">{{entry_error_message}}
-								<span class="help">{{help_error_message}}</span>
+								<label class="col-sm-2 control-label">{{ entry_force_map }}
+									<span class="help">{{ help_force_map }}</span>
 								</label>
-								<div class="col-sm-8">
-									{% for language in languages %}
-										{% set message_value = _context['error_message_'~language.language_id] is defined ? _context['error_message_'~language.language_id] : null %}
+								<div class="col-sm-10">
+									<input type="checkbox" name="force_map" data-control="checkbox" value="1"
+										   data-off-label="{{ text_no }}"
+										   data-on-label="{{ text_yes }}" {% if force_map %} checked="checked" {% endif %} />
 
-										<div class="input-group">
-											<span class="input-group-addon"><img
-														src="language/{{ language.code }}/{{ language.code }}.png"
-														title="{{ language.name }}"/></span>
-											<textarea rows="3" name="error_message_{{ language.language_id }}"
-											          class="form-control"/>{{ message_value }}</textarea>
-										</div>
-									{% endfor %}
+								</div>
+							</div>
+
+
+							<div class="form-group required">
+								<label class="col-sm-2 control-label" for="api">
+									{{ entry_map_api }}
+									<span class="help">
+										{{ help_map_api }}
+									</span>
+								</label>
+								<div class="col-sm-10">
+									<input name="api" type="text" value="{{ api }}"  class="form-control">
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-2 control-label" for="input-status">{{entry_share_location_template}}
-								<span class="help">{{help_share_location_template}}</span>
+								<label class="col-sm-2 control-label" for="input-status">{{entry_error_message}}
+									<span class="help">{{help_error_message}}</span>
 								</label>
 								<div class="col-sm-8">
 									{% for language in languages %}
-										{% set the_value = _context['share_location_template_'~language.language_id] is defined ? _context['share_location_template_'~language.language_id] : null %}
+									{% set message_value = _context['error_message_'~language.language_id] is defined ? _context['error_message_'~language.language_id] : null %}
 
-										<div class="input-group">
-											<span class="input-group-addon"><img
-														src="language/{{ language.code }}/{{ language.code }}.png"
-														title="{{ language.name }}"/></span>
-											<textarea rows="3" name="share_location_template_{{ language.language_id }}"
-											          class="form-control"/>{{ the_value }}</textarea>
-										</div>
-									{% endfor %}
+									<div class="input-group">
+										<span class="input-group-addon"><img
+																			 src="language/{{ language.code }}/{{ language.code }}.png"
+																			 title="{{ language.name }}"/></span>
+										<textarea rows="3" name="error_message_{{ language.language_id }}"
+												  class="form-control"/>{{ message_value }}</textarea>
 								</div>
+								{% endfor %}
 							</div>
-			
 						</div>
-						 <div class="tab-pane" id="tab-help">
-	                     <div id="license"></div>											
-	                     <div id="support"></div>
-		                <script type="text/javascript">
-			             $('#support').load('index.php?route=common/hp_validate/support&user_token={{ user_token }}');
-			             $('#license').load('index.php?route=common/hp_validate/license&user_token={{ user_token }}&code={{extension_code}}&version={{version}}');
-		              </script>
-	                  </div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-status">{{entry_share_location_template}}
+								<span class="help">{{help_share_location_template}}</span>
+							</label>
+							<div class="col-sm-8">
+								{% for language in languages %}
+								{% set the_value = _context['share_location_template_'~language.language_id] is defined ? _context['share_location_template_'~language.language_id] : null %}
+
+								<div class="input-group">
+									<span class="input-group-addon"><img
+																		 src="language/{{ language.code }}/{{ language.code }}.png"
+																		 title="{{ language.name }}"/></span>
+									<textarea rows="3" name="share_location_template_{{ language.language_id }}"
+											  class="form-control"/>{{ the_value }}</textarea>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
 
 					</div>
-				</form>
+				<div class="tab-pane" id="tab-help">
+					<div id="license"></div>
+					<div id="support"></div>
+					<script type="text/javascript">
+						$('#support').load('index.php?route=common/hp_validate/support&user_token={{ user_token }}');
+						$('#license').load('index.php?route=common/hp_validate/license&user_token={{ user_token }}&code={{extension_code}}&version={{version}}');
+					</script>
+				</div>
+
 			</div>
-		</div>
+			</form>
 	</div>
+</div>
+</div>
 </div>
 
 <style>
-.help {
+	.help {
 		color: #888;
 		font-weight: normal;
 		font-size: 11px;
@@ -165,22 +178,22 @@
 	}
 </style>
 <script>
-$(document).ready(function(){
-	$.get("https://hpwebdesign.io/index.php?route=common/extension/version&code={{ extension_code }}&oc=3.0.x.x", function(data, status){ 
-	    const version =  "{{version}}".replace(/\D/g,'');
-	    const latest_version = data.replace(/\D/g,'');
-	 if(version<latest_version){
-		 $('.panel.panel-default:first').parent().prepend(`<div class="alert alert-danger">
-		 <i class="fa fa-exclamation-circle"></i>
-		 {{text_upgrade_version}}
-		 </div>`);
-	 }
- });
+	$(document).ready(function(){
+		$.get("https://hpwebdesign.io/index.php?route=common/extension/version&code={{ extension_code }}&oc=3.0.x.x", function(data, status){
+			const version =  "{{version}}".replace(/\D/g,'');
+			const latest_version = data.replace(/\D/g,'');
+			if(version<latest_version){
+				$('.panel.panel-default:first').parent().prepend(`<div class="alert alert-danger">
+<i class="fa fa-exclamation-circle"></i>
+{{text_upgrade_version}}
+	</div>`);
+			}
+		});
 
- if ($.fn.checkboxpicker) {
-    $('[data-control=checkbox]').checkboxpicker({onClass: 'btn-info'});
-	$('.btn-group .btn').addClass('btn-sm');
- }
-});
+		if ($.fn.checkboxpicker) {
+			$('[data-control=checkbox]').checkboxpicker({onClass: 'btn-info'});
+			$('.btn-group .btn').addClass('btn-sm');
+		}
+	});
 </script>
 {{ footer }}

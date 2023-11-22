@@ -9,12 +9,12 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 				$this->model_account_address->editMapLocation($this->request->post['address_id'], $this->request->post);
 			}
 
-            $this->session->data['shipping_address']['map_location_lat'] = $this->request->post['map_location_lat'];
-            $this->session->data['shipping_address']['map_location_lng'] = $this->request->post['map_location_lng'];
+			$this->session->data['shipping_address']['map_location_lat'] = $this->request->post['map_location_lat'];
+			$this->session->data['shipping_address']['map_location_lng'] = $this->request->post['map_location_lng'];
 
-            $this->session->data['shipping_address_hpwd']['map_location_lat'] = $this->request->post['map_location_lat'];
-            $this->session->data['shipping_address_hpwd']['map_location_lng'] = $this->request->post['map_location_lng'];
-			
+			$this->session->data['shipping_address_hpwd']['map_location_lat'] = $this->request->post['map_location_lat'];
+			$this->session->data['shipping_address_hpwd']['map_location_lng'] = $this->request->post['map_location_lng'];
+
 
 			if($this->config->get('module_marketplace_status')) {
 				$this->session->data['lat'] = $this->request->post['map_location_lat'];
@@ -34,11 +34,15 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 			return '';
 		}
 
+		if(!$this->config->get('module_hp_map_location_force_map')) {
+			return '';
+		}
+
 		$data = array();
 
 		$route = $this->request->get['route'] ?? '';
 
-		
+
 
 		if ($route == 'checkout/cart' || $route == 'checkout/checkout') {
 
@@ -52,7 +56,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 
 			$map_location_lat = 0;
 
-			
+
 			$map_location_lat = $this->session->data['shipping_address_hpwd']['map_location_lat'] ?? 0;
 
 			$map_location_lng = $this->session->data['shipping_address_hpwd']['map_location_lng'] ?? 0;
@@ -66,18 +70,18 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 
 				if(!$data['have_coordinate']){
 					$data['module_id'] = rand(1, 100000);
-	
+
 					$data['cart_page'] =  $route == 'checkout/cart';
-	
+
 					$data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
-	
+
 					$data['address_id'] = $address_id ?? 0;
-	
+
 					return $this->load->view('extension/module/modal_edit_map_location', $data);
 				}
 			}
 
-		
+
 
 		}
 	}
