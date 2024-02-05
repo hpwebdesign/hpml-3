@@ -523,7 +523,26 @@ const input = document.getElementById("pac-input");
 
   </file>
 
-    <file path="admin/controller/{customer/customer.php,localisation/location.php}">
+    <file path="admin/controller/customer/customer.php">
+    <operation error="skip">
+      <search  trim="true"><![CDATA[function getForm()]]></search>
+      <add position="after"><![CDATA[
+          $data['module_hp_map_location_status'] = $this->config->get('module_hp_map_location_status');
+
+          if($data['module_hp_map_location_status']){
+
+             $this->load->language('extension/module/hp_map_location');
+             $this->load->language('localisation/location');
+             $this->load->language('customer/customer');
+
+             $this->document->addScript('https://polyfill.io/v3/polyfill.min.js?features=default');
+             $this->document->addScript('https://maps.googleapis.com/maps/api/js?key=' . $this->config->get('module_hp_map_location_api') . '&libraries=places&v=weekly');
+             $this->document->addScript('view/javascript/hpml.js');
+          }
+      ]]></add>
+    </operation>
+  </file>
+  <file path="admin/controller/localisation/location.php">
     <operation error="skip">
       <search  trim="true"><![CDATA[function getForm()]]></search>
       <add position="after"><![CDATA[
