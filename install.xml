@@ -1625,8 +1625,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search index="1"  trim="true"><![CDATA[if ($this->cart->hasShipping()) {]]></search>
       <add  position="before"><![CDATA[
-        $order_data['map_location_lat'] = $this->session->data['shipping_address']['map_location_lat'];
-        $order_data['map_location_lng'] = $this->session->data['shipping_address']['map_location_lng'];
+        $order_data['map_location_lat'] = isset($this->session->data['shipping_address']['map_location_lat']) ? $this->session->data['shipping_address']['map_location_lat'] : '';
+        $order_data['map_location_lng'] = isset($this->session->data['shipping_address']['map_location_lng']) ? $this->session->data['shipping_address']['map_location_lng'] : '';
       ]]></add>
     </operation>
 
