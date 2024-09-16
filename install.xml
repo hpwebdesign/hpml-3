@@ -33,7 +33,8 @@
           'href'     => $this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true),
           'children' => array()
         );
-      }]]></add>
+          }
+    ]]></add>
     </operation>
   </file>
 
@@ -570,7 +571,7 @@ const input = document.getElementById("pac-input");
        'map_location_lng'      => isset($address_query->row['map_location_lng']) && !empty($address_query->row['map_location_lng']) ? $address_query->row['map_location_lng'] : 110.370529,
       ]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search   trim="true"><![CDATA[if (isset($address['default'])) {]]></search>
       <add position="before"><![CDATA[
@@ -579,9 +580,9 @@ const input = document.getElementById("pac-input");
        }
       ]]></add>
     </operation>
-    
-    
-    
+
+
+
    </file>
 
    <file path="admin/view/template/customer/customer_form.twig">
@@ -1277,9 +1278,9 @@ const input = document.getElementById("pac-input");
          $('#button-edit-map-location').show();
       ]]></add>
     </operation>
-    
-   
-   
+
+
+
 
     <operation error="skip">
       <search  trim="true"><![CDATA[<div class="pull-right">]]></search>
@@ -1288,11 +1289,11 @@ const input = document.getElementById("pac-input");
 
          <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i style="margin-right:5px;" class="fa fa-map-marker"></i>{{ button_edit_location }}</button>
 
- 
+
         <script>
-        
+
         $("#modal-edit-location").remove();
-        
+
          $("#content").prepend(`<div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -1325,20 +1326,20 @@ const input = document.getElementById("pac-input");
     </div>
   </div>
 </div>`);
-         
-        
 
-    
-    
-    
+
+
+
+
+
    {% if (module_hp_map_location_compulsory) %}
-    
+
     $(document).delegate('#shipping-existing [name="address_id"]', 'change', function() {
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
-        
+
         $('.alert-danger').remove();
-        
+
          if (data_lat == '' || data_lng == '') {
             $('#shipping-new').before(`<div class="alert alert-danger">
         <i class="fa fa-info-circle"></i>
@@ -1347,11 +1348,11 @@ const input = document.getElementById("pac-input");
         </div>`);
         }
     });
-    
+
 
      $('#shipping-existing [name="address_id"]').trigger('change');
     {% endif %}
-    
+
       let lat = -7.797068, lng = 110.370529, address_id;
         $(document).delegate('#button-edit-map-location', 'click', function() {
             $('.alert').remove();
@@ -1465,17 +1466,17 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         <button class="close" data-dismiss="alert" type="button">×</button>
     </div>
     `);
-    
+
     $("#shipping-existing").find(":selected").data('lng',lng);
     $("#shipping-existing").find(":selected").data('lat', lat);
     setTimeout(function(){ $('#modal-edit-location').modal('hide'); }, 2000);
-    
+
    }
     }).catch((err)=>{
        $("#update-map-location").button('reset');
     });
-    
-   
+
+
 });
             </script>
          {% endif %}
@@ -1533,11 +1534,11 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         $('.alert').remove();
           {% if module_hp_map_location_compulsory %}
         var shipping_address_type = $('#collapse-shipping-address input[name=\'shipping_address\']').val();
-        
+
         if (shipping_address_type == 'existing') {
         var data_lat = $("#shipping-existing").find(":selected").data('lat');
         var data_lng = $("#shipping-existing").find(":selected").data('lng');
-       
+
         if (data_lat == '' || data_lng == '') {
             $('#shipping-new').before(`<div class="alert alert-danger">
         <i class="fa fa-info-circle"></i>
@@ -1546,9 +1547,9 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     </div>`);
     return;
         }
-        
+
         }
-        
+
     {% endif %}
       ]]></add>
     </operation>
@@ -1586,10 +1587,10 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     </operation>
 
   </file>
-  
-  
-  
-  
+
+
+
+
 
   <file path="catalog/controller/checkout/shipping_address.php">
     <operation error="skip">
@@ -1719,16 +1720,16 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       ]]></add>
     </operation>
   </file>
-  
+
   <file path="catalog/controller/common/footer.php">
     <operation error="skip">
       <search   trim="true"><![CDATA[$data['styles']]]></search>
       <add  position="after"><![CDATA[
-       $data['modal_hpml'] = $this->load->controller('extension/module/hp_map_location/modalEditMapLocation'); 
+       $data['modal_hpml'] = $this->load->controller('extension/module/hp_map_location/modalEditMapLocation');
       ]]></add>
     </operation>
   </file>
-  
+
   <file path="catalog/view/theme/*/template/common/footer.twig">
     <operation error="skip">
       <search   trim="true"><![CDATA[</body>]]></search>
@@ -1740,85 +1741,85 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
 
 
 <file path="catalog/controller/extension/total/shipping.php">
-      
+
     <operation error="skip">
       <search  trim="true"><![CDATA[if (!$this->cart->hasProducts()) {]]></search>
       <add position="before"><![CDATA[
           $address_id = $this->customer->getAddressId();
-          
-          $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
-          
-          $map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
-          
 
-          
+          $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
+
+          $map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
+
+
+
           if($address_id && (!$map_location_lat || !$map_location_lat)){
                 $this->load->model('account/address');
-          
+
                 $default_address = $this->model_account_address->getAddress($address_id);
-                
+
                 if(!empty($default_address)){
                     $map_location_lat = $default_address['map_location_lat'];
-                    
+
                     $map_location_lng = $default_address['map_location_lng'];
                 }
           }
-          
+
           $hide_form = $map_location_lat && $map_location_lng;
-          
+
       ]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search trim="true"><![CDATA[$json['error']['postcode']]]></search>
       <add position="replace"><![CDATA[// $json['error']['postcode']]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search trim="true"><![CDATA[$json['error']['country'] = $this->language->get('error_country');]]></search>
       <add position="replace"><![CDATA[if(!$hide_form){
          $json['error']['country'] = $this->language->get('error_country');
       }]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search trim="true"><![CDATA[$json['error']['zone'] = $this->language->get('error_zone');]]></search>
       <add position="replace"><![CDATA[if(!$hide_form){
         $json['error']['zone'] = $this->language->get('error_zone');
       }]]></add>
     </operation>
-    
+
 
     <operation error="skip">
       <search  trim="true"><![CDATA[$this->load->view('extension/total/shipping', $data)]]></search>
       <add position="before"><![CDATA[
           $address_id = $this->customer->getAddressId();
-          
+
           $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
-          
+
           $map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
-          
+
           if($address_id && (!$map_location_lat || !$map_location_lng)){
                 $this->load->model('account/address');
-          
+
                 $default_address = $this->model_account_address->getAddress($address_id);
-                
+
                 if(!empty($default_address)){
                     $map_location_lat = $default_address['map_location_lat'];
-                    
+
                     $map_location_lng = $default_address['map_location_lng'];
                 }
-                
+
           }
-          
+
           $data['have_coordinate'] = $map_location_lat && $map_location_lng;
-          
+
           $data['text_shipping'] = '';
       ]]></add>
     </operation>
-    
 
-    
+
+
     <operation error="skip">
       <search  trim="true"><![CDATA[$this->session->data['shipping_address'] = array(]]></search>
       <add position="after"><![CDATA[
@@ -1826,84 +1827,84 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
           'map_location_lng'     => $map_location_lng,
       ]]></add>
     </operation>
-    
-    
+
+
 
   </file>
-  
-  
+
+
   <file path="catalog/controller/checkout/shipping_address.php">
-      
+
     <operation error="skip">
       <search  trim="true"><![CDATA[unset($this->session->data['shipping_method']);]]></search>
       <add position="replace"><![CDATA[// unset($this->session->data['shipping_method']);]]></add>
     </operation>
-    
+
      <operation error="skip">
       <search  trim="true"><![CDATA[unset($this->session->data['shipping_methods']);]]></search>
       <add position="replace"><![CDATA[// unset($this->session->data['shipping_methods']);]]></add>
     </operation>
 
   </file>
-  
+
    <file path="catalog/view/theme/*/template/extension/total/shipping.twig">
     <operation error="skip">
       <search index="2" trim="true"><![CDATA[<div class="form-group required">]]></search>
       <add position="replace"><![CDATA[<div class="form-group required" style="display:none;">]]></add>
     </operation>
-    
+
      <operation error="skip">
       <search trim="true"><![CDATA[id="button-quote"]]></search>
       <add position="replace"><![CDATA[id="button-quote" {% if not have_coordinate %} disabled {% endif %}]]></add>
     </operation>
-    
-    
-    
+
+
+
     <operation error="skip">
       <search index="0,1" trim="true"><![CDATA[<div class="form-group required">]]></search>
       <add position="replace"><![CDATA[<div class="form-group required" {% if 1 %} style="display:none;" {% endif %}>]]></add>
     </operation>
-    
+
     <operation error="skip">
       <search trim="true"><![CDATA[<div class="form-horizontal">]]></search>
       <add position="after"><![CDATA[
-     {% if not have_coordinate %} 
+     {% if not have_coordinate %}
       <style>
       .alert-set-location{
          display:flex;
          margin-bottom: 15px;
       }
-      
+
       .alert-set-location .alert-info{
          margin: 0 20px 0 0;
       }
-      
+
       @media (max-width: 400px) {
           .alert-set-location{
             flex-direction: column;
           }
-          
+
           .alert-set-location .alert-info{
             width:100%;
           }
        }
       </style>
-      
+
       <div class="alert-set-location">
           <div  class="alert alert-info"><i class="fa fa-info-circle"></i> {{text_shipping_estimate}}</div>
           <button data-target=".modal-edit-location-cart" data-toggle="modal" type="button" class="btn btn-primary">{{text_set_location}}</button>
       </div>
-      
+
       <script>
       $('#button-quote').prop('disabled', true);
       </script>
       {% endif %}
       ]]></add>
     </operation>
-    
-    
-    
-    
+
+
+
+
   </file>
 
 
