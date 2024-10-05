@@ -1723,8 +1723,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
 
   <file path="catalog/controller/common/footer.php">
     <operation error="skip">
-      <search   trim="true"><![CDATA[$data['styles']]]></search>
-      <add  position="after"><![CDATA[
+      <search   trim="true"><![CDATA[return $this->load->view('common/footer', $data);]]></search>
+      <add  position="before"><![CDATA[
        $data['modal_hpml'] = $this->load->controller('extension/module/hp_map_location/modalEditMapLocation');
       ]]></add>
     </operation>
@@ -1745,6 +1745,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[if (!$this->cart->hasProducts()) {]]></search>
       <add position="before"><![CDATA[
+      $hide_form = 0;
+      if($this->config->get('module_hp_map_location_status') && $this->config->get('module_hp_map_location_force_map')){
           $address_id = $this->customer->getAddressId();
 
           $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
@@ -1766,7 +1768,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
           }
 
           $hide_form = $map_location_lat && $map_location_lng;
-
+        }
       ]]></add>
     </operation>
 
@@ -1793,6 +1795,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     <operation error="skip">
       <search  trim="true"><![CDATA[$this->load->view('extension/total/shipping', $data)]]></search>
       <add position="before"><![CDATA[
+      $data['hpml_status'] = $this->config->get('module_hp_map_location_status') && $this->config->get('module_hp_map_location_force_map');
+      if($this->config->get('module_hp_map_location_status') && $this->config->get('module_hp_map_location_force_map')){
           $address_id = $this->customer->getAddressId();
 
           $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
@@ -1815,6 +1819,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
           $data['have_coordinate'] = $map_location_lat && $map_location_lng;
 
           $data['text_shipping'] = '';
+          }
       ]]></add>
     </operation>
 
@@ -1850,25 +1855,25 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
    <file path="catalog/view/theme/*/template/extension/total/shipping.twig">
     <operation error="skip">
       <search index="2" trim="true"><![CDATA[<div class="form-group required">]]></search>
-      <add position="replace"><![CDATA[<div class="form-group required" style="display:none;">]]></add>
+      <add position="replace"><![CDATA[<div class="form-group required" {% if hpml_status %}style="display:none;"{% endif %}>]]></add>
     </operation>
 
      <operation error="skip">
       <search trim="true"><![CDATA[id="button-quote"]]></search>
-      <add position="replace"><![CDATA[id="button-quote" {% if not have_coordinate %} disabled {% endif %}]]></add>
+      <add position="replace"><![CDATA[id="button-quote" {% if not have_coordinate and hpml_status %} disabled {% endif %}]]></add>
     </operation>
 
 
 
     <operation error="skip">
       <search index="0,1" trim="true"><![CDATA[<div class="form-group required">]]></search>
-      <add position="replace"><![CDATA[<div class="form-group required" {% if 1 %} style="display:none;" {% endif %}>]]></add>
+      <add position="replace"><![CDATA[<div class="form-group required" {% if hpml_status %} style="display:none;" {% endif %}>]]></add>
     </operation>
 
     <operation error="skip">
       <search trim="true"><![CDATA[<div class="form-horizontal">]]></search>
       <add position="after"><![CDATA[
-     {% if not have_coordinate %}
+     {% if not have_coordinate and hpml_status %}
       <style>
       .alert-set-location{
          display:flex;
