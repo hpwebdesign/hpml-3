@@ -1,7 +1,8 @@
-distribution/
 obfuscated/
-*.zip
+/*.zip
+/*.txt
 .idea/
 build/
 vendor/
-RoboFile.php
+distribution/
+.env

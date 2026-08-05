@@ -1,15 +1,15 @@
 <modification>
-  <name><![CDATA[HP Map Location]]></name>
+  <name><![CDATA[Bariklabs Map Location]]></name>
   <code>HPML</code>
   <version>1.0.0.4</version>
-  <link>http://hpwebdesign.io</link>
-  <author><![CDATA[HP Web Design]]></author>
+  <link>http://bariklabs.com</link>
+  <author><![CDATA[Bariklabs]]></author>
 
   <file path="admin/language/en-gb/common/column_left.php">
     <operation error="skip">
       <search trim="true"><![CDATA[// Text]]></search>
       <add position="after"><![CDATA[
-     $_['text_hp_map_location']   = 'HP Map Location';
+     $_['text_hp_map_location']   = 'Map Location';
     ]]>      </add>
     </operation>
   </file>
@@ -18,7 +18,7 @@
     <operation error="skip">
       <search trim="true"><![CDATA[// Text]]></search>
       <add position="after"><![CDATA[
-   $_['text_hp_map_location']   = 'HP Map Location';
+   $_['text_hp_map_location']   = 'Map Location';
       ]]>      </add>
     </operation>
   </file>

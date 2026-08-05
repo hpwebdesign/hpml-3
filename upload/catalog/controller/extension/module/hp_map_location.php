@@ -57,9 +57,9 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 			$map_location_lat = 0;
 
 
-			$map_location_lat = $this->session->data['shipping_address_hpwd']['map_location_lat'] ?? 0;
+			$map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
 
-			$map_location_lng = $this->session->data['shipping_address_hpwd']['map_location_lng'] ?? 0;
+			$map_location_lng = $this->session->data['shipping_address']['map_location_lng'] ?? 0;
 
 			$checkout_page = $route == 'checkout/checkout';
 
