@@ -6,3 +6,4 @@ build/
 vendor/
 distribution/
 .env
+CLAUDE.md

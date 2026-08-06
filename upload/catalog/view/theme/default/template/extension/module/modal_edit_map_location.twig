@@ -1,6 +1,5 @@
 {% if cart_page %}
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
 
 {% endif %}
@@ -18,6 +17,17 @@
     <style type="text/css">
       #edit-map-location{{module_id}} {
         height: 500px;
+      }
+      /* Force visibility regardless of theme's Bootstrap version/CSS (some themes'
+         .modal/.modal-backdrop CSS or z-index don't match this markup, leaving only
+         the backdrop visible with no dialog on top). */
+      #modal-edit-location{{module_id}}.in,
+      #modal-edit-location{{module_id}}.show {
+        display: block !important;
+        z-index: 1060 !important;
+      }
+      #modal-edit-location{{module_id}} .modal-dialog {
+        z-index: 1061 !important;
       }
     </style>
 
@@ -37,7 +47,8 @@
 
 //alert(1);
 
- 
+$(document).ready(function(){
+
     let lat = -7.797068, lng = 110.370529, address_id;
 
        
@@ -166,8 +177,10 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     }).catch((err)=>{
        $("#update-map-location{{module_id}}").button('reset');
     });
-    
-   
+
+
+});
+
 });
 
 </script>

@@ -1797,6 +1797,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
       <add position="before"><![CDATA[
       $data['hpml_status'] = $this->config->get('module_hp_map_location_status') && $this->config->get('module_hp_map_location_force_map');
       if($this->config->get('module_hp_map_location_status') && $this->config->get('module_hp_map_location_force_map')){
+          $this->load->language('extension/module/hp_map_location');
           $address_id = $this->customer->getAddressId();
 
           $map_location_lat = $this->session->data['shipping_address']['map_location_lat'] ?? 0;
@@ -1897,7 +1898,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
 
       <div class="alert-set-location">
           <div  class="alert alert-info"><i class="fa fa-info-circle"></i> {{text_shipping_estimate}}</div>
-          <button data-target=".modal-edit-location-cart" data-toggle="modal" type="button" class="btn btn-primary">{{text_set_location}}</button>
+          <button data-target=".modal-edit-location-cart" data-toggle="modal" type="button" class="btn btn-primary">{{ text_set_location }}</button>
       </div>
 
       <script>
