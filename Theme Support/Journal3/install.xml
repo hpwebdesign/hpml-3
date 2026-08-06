@@ -58,6 +58,8 @@
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
         <script src="catalog/view/javascript/hpml.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notyf@3/notyf.min.css">
+        <script src="https://unpkg.com/notyf@3/notyf.min.js"></script>
          <script>
          
          console.log($('.payment-address input[type="radio"]').length);
@@ -160,6 +162,7 @@
         }
     {% endif %}
       let lat = -7.797068, lng = 110.370529, address_id;
+        const notyf = new Notyf();
         $(document).delegate('#button-edit-map-location', 'click', function() {
             $('.alert').remove();
            $('#modal-edit-location').modal('show');
@@ -261,14 +264,8 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         .then(res => {
   $("#update-map-location").button('reset');
    if(res.status==200){
-    $('#edit-map-location').before(`
-     <div class="alert alert-success">
-        <i class="fa fa-check-circle"></i>
-         {{ text_success_update_map }}
-        <button class="close" data-dismiss="alert" type="button">×</button>
-    </div>
-    `);
-    
+    notyf.success(`{{ text_success_update_map }}`);
+
     $("#payment-existing").find(":selected").data('lng',lng);
     $("#payment-existing").find(":selected").data('lat', lat);
     setTimeout(function(){ $('#modal-edit-location').modal('hide'); }, 2000);

@@ -1,5 +1,7 @@
 {% if cart_page %}
 
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/notyf@3/notyf.min.css">
+<script src="https://unpkg.com/notyf@3/notyf.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
 
 {% endif %}
@@ -50,10 +52,14 @@
 $(document).ready(function(){
 
     let lat = -7.797068, lng = 110.370529, address_id;
+    const notyf = new Notyf();
 
        
     $('#modal-edit-location{{module_id}} .alert').remove();
-    $('#modal-edit-location{{module_id}}').modal('show');
+    $('.modal-backdrop').remove();
+    setTimeout(function(){
+        $('#modal-edit-location{{module_id}}').modal('show');
+    }, 300);
     initMapEdit();
     var data_lat = $("#shipping-existing").find(":selected").data('lat');
     var data_lng = $("#shipping-existing").find(":selected").data('lng');
@@ -143,7 +149,6 @@ $("#update-map-location{{module_id}}").button('loading');
 formData.append(`address_id`, address_id);
 formData.append(`map_location_lat`, lat);
 formData.append(`map_location_lng`, lng);
-formData.append(`redirect`, window.location.href);
 
 
 fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
@@ -154,23 +159,12 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         .then(json => {
           $("#update-map-location{{module_id}}").button('reset');
           if(json.status){
-                $('#edit-map-location{{module_id}}').before(`
-                <div class="alert alert-success">
-                    <i class="fa fa-check-circle"></i>
-                    {{ text_success_update_map }}
-                    <button class="close" data-dismiss="alert" type="button">×</button>
-                </div>
-                `);
-                
+                notyf.success(`{{ text_success_update_map }}`);
+
                 $("#shipping-existing").find(":selected").data('lng',lng);
                 $("#shipping-existing").find(":selected").data('lat', lat);
-                setTimeout(function(){ 
-                  if(json.redirect){
-                       window.location.href = json.redirect;
-                  }else{
-                       $('#modal-edit-location{{module_id}}').modal('hide'); 
-                  }
-
+                setTimeout(function(){
+                     $('#modal-edit-location{{module_id}}').modal('hide');
                 }, 2000);
             
           }

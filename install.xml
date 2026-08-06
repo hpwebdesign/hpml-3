@@ -1289,6 +1289,8 @@ const input = document.getElementById("pac-input");
 
          <button type="button"  id="button-edit-map-location" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i style="margin-right:5px;" class="fa fa-map-marker"></i>{{ button_edit_location }}</button>
 
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notyf@3/notyf.min.css">
+        <script src="https://unpkg.com/notyf@3/notyf.min.js"></script>
 
         <script>
 
@@ -1354,6 +1356,7 @@ const input = document.getElementById("pac-input");
     {% endif %}
 
       let lat = -7.797068, lng = 110.370529, address_id;
+        const notyf = new Notyf();
         $(document).delegate('#button-edit-map-location', 'click', function() {
             $('.alert').remove();
            $('#modal-edit-location').modal('show');
@@ -1459,13 +1462,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         .then(res => {
   $("#update-map-location").button('reset');
    if(res.status==200){
-    $('#edit-map-location').before(`
-     <div class="alert alert-success">
-        <i class="fa fa-check-circle"></i>
-         {{ text_success_update_map }}
-        <button class="close" data-dismiss="alert" type="button">×</button>
-    </div>
-    `);
+    notyf.success(`{{ text_success_update_map }}`);
 
     $("#shipping-existing").find(":selected").data('lng',lng);
     $("#shipping-existing").find(":selected").data('lat', lat);
