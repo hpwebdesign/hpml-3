@@ -1,37 +1,95 @@
 {% if cart_page %}
 
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/notyf@3/notyf.min.css">
-<script src="https://unpkg.com/notyf@3/notyf.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ module_hp_map_location_api }}&libraries=places&v=weekly"></script>
 
 {% endif %}
 
 
-<div class="modal fade {% if cart_page %} modal-edit-location-cart {% endif %}" data-backdrop="static" id="modal-edit-location{{module_id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<style type="text/css">
+  /*
+    Modal ini SENGAJA dibuat tidak bergantung pada CSS/JS Bootstrap milik tema
+    atau modul lain (mis. BQC Quick Checkout). Modul lain bisa memuat CSS
+    sendiri yang menimpa .modal/.modal-dialog/.modal-content, atau memakai
+    versi Bootstrap yang berbeda, sehingga backdrop muncul tapi kotak dialog
+    tidak terlihat. Semua aturan di bawah pakai selector khusus module_id +
+    !important + z-index sangat tinggi supaya selalu menang.
+  */
+  #hpml-backdrop{{module_id}} {
+    display: none;
+    position: fixed !important;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 2147483000 !important;
+  }
+  #hpml-backdrop{{module_id}}.hpml-open {
+    display: block !important;
+  }
+  #modal-edit-location{{module_id}} {
+    display: none;
+    position: fixed !important;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    z-index: 2147483001 !important;
+    overflow-y: auto !important;
+    padding: 30px 15px !important;
+    box-sizing: border-box !important;
+  }
+  #modal-edit-location{{module_id}}.hpml-open {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  #modal-edit-location{{module_id}} .modal-dialog {
+    position: relative !important;
+    z-index: 2147483002 !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+  #modal-edit-location{{module_id}} .modal-content {
+    position: relative !important;
+    display: block !important;
+    background: #fff !important;
+    border-radius: 6px !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,.5) !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  #modal-edit-location{{module_id}} .modal-header,
+  #modal-edit-location{{module_id}} .modal-body,
+  #modal-edit-location{{module_id}} .modal-footer {
+    display: block !important;
+    padding: 15px !important;
+  }
+  #modal-edit-location{{module_id}} .modal-header {
+    border-bottom: 1px solid #e5e5e5 !important;
+  }
+  #modal-edit-location{{module_id}} .modal-footer {
+    border-top: 1px solid #e5e5e5 !important;
+    text-align: right !important;
+  }
+  #modal-edit-location{{module_id}} .modal-footer::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  #edit-map-location{{module_id}} {
+    height: 500px;
+  }
+</style>
+
+<div id="hpml-backdrop{{module_id}}"></div>
+
+<div id="modal-edit-location{{module_id}}" class="{% if cart_page %}modal-edit-location-cart{% endif %}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" id="hpml-close{{module_id}}" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">{{ text_set_coordinate }}</h4>
       </div>
       <div class="modal-body">
-
-    <style type="text/css">
-      #edit-map-location{{module_id}} {
-        height: 500px;
-      }
-      /* Force visibility regardless of theme's Bootstrap version/CSS (some themes'
-         .modal/.modal-backdrop CSS or z-index don't match this markup, leaving only
-         the backdrop visible with no dialog on top). */
-      #modal-edit-location{{module_id}}.in,
-      #modal-edit-location{{module_id}}.show {
-        display: block !important;
-        z-index: 1060 !important;
-      }
-      #modal-edit-location{{module_id}} .modal-dialog {
-        z-index: 1061 !important;
-      }
-    </style>
 
          <div id="edit-map-location{{module_id}}"></div>
 
@@ -49,17 +107,37 @@
 
 //alert(1);
 
-$(document).ready(function(){
-
+ 
     let lat = -7.797068, lng = 110.370529, address_id;
-    const notyf = new Notyf();
+
+    function hpmlOpenModal{{module_id}}() {
+        $('#modal-edit-location{{module_id}}').addClass('hpml-open');
+        $('#hpml-backdrop{{module_id}}').addClass('hpml-open');
+        $('body').css('overflow', 'hidden');
+    }
+
+    function hpmlCloseModal{{module_id}}() {
+        $('#modal-edit-location{{module_id}}').removeClass('hpml-open');
+        $('#hpml-backdrop{{module_id}}').removeClass('hpml-open');
+        $('body').css('overflow', '');
+    }
+
+    $('#hpml-close{{module_id}}').on('click', function () {
+        hpmlCloseModal{{module_id}}();
+    });
+
+    // Fallback: tombol "Set Lokasi" lain di halaman (mis. dari total/shipping.twig)
+    // memicu modal ini lewat data-toggle="modal" data-target=".modal-edit-location-cart".
+    // Kita tangani sendiri di sini supaya tetap berfungsi walau plugin Bootstrap
+    // ".modal()" tidak jalan/konflik dengan modul lain.
+    $(document).on('click', '[data-target=".modal-edit-location-cart"], [data-target="#modal-edit-location{{module_id}}"]', function (e) {
+        e.preventDefault();
+        hpmlOpenModal{{module_id}}();
+    });
 
        
     $('#modal-edit-location{{module_id}} .alert').remove();
-    $('.modal-backdrop').remove();
-    setTimeout(function(){
-        $('#modal-edit-location{{module_id}}').modal('show');
-    }, 300);
+    hpmlOpenModal{{module_id}}();
     initMapEdit();
     var data_lat = $("#shipping-existing").find(":selected").data('lat');
     var data_lng = $("#shipping-existing").find(":selected").data('lng');
@@ -143,12 +221,15 @@ $(document).ready(function(){
     }
 
       $("#update-map-location{{module_id}}").click(function(){
-$("#update-map-location{{module_id}}").button('loading');
+if (typeof $("#update-map-location{{module_id}}").button === 'function') {
+    $("#update-map-location{{module_id}}").button('loading');
+}
      let formData = new FormData();
 
 formData.append(`address_id`, address_id);
 formData.append(`map_location_lat`, lat);
 formData.append(`map_location_lng`, lng);
+formData.append(`redirect`, window.location.href);
 
 
 fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
@@ -157,24 +238,33 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
         })
         .then(res => res.json())
         .then(json => {
-          $("#update-map-location{{module_id}}").button('reset');
+          if (typeof $("#update-map-location{{module_id}}").button === 'function') { $("#update-map-location{{module_id}}").button('reset'); }
           if(json.status){
-                notyf.success(`{{ text_success_update_map }}`);
-
+                $('#edit-map-location{{module_id}}').before(`
+                <div class="alert alert-success">
+                    <i class="fa fa-check-circle"></i>
+                    {{ text_success_update_map }}
+                    <button class="close" data-dismiss="alert" type="button">×</button>
+                </div>
+                `);
+                
                 $("#shipping-existing").find(":selected").data('lng',lng);
                 $("#shipping-existing").find(":selected").data('lat', lat);
-                setTimeout(function(){
-                     $('#modal-edit-location{{module_id}}').modal('hide');
+                setTimeout(function(){ 
+                  if(json.redirect){
+                       window.location.href = json.redirect;
+                  }else{
+                       hpmlCloseModal{{module_id}}();
+                  }
+
                 }, 2000);
             
           }
     }).catch((err)=>{
-       $("#update-map-location{{module_id}}").button('reset');
+       if (typeof $("#update-map-location{{module_id}}").button === 'function') { $("#update-map-location{{module_id}}").button('reset'); }
     });
-
-
-});
-
+    
+   
 });
 
 </script>
