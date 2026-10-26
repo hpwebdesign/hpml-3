@@ -34,21 +34,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 		$this->document->setTitle($this->language->get('heading_title2'));
 		$data['heading_title'] = $this->language->get('heading_title2');
 
-		//Load additional CSS/JS
-		$this->document->addScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-checkbox/1.5.0/js/bootstrap-checkbox.min.js');
-
 		$this->load->model('setting/setting');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$post = $this->request->post;
-			foreach ($post as $key => $value) {
-				$data['module_hp_map_location_' . $key] = $value;
-			}
-			$this->session->data['success'] = $this->language->get('text_success');
-
-			$this->model_setting_setting->editSetting('module_hp_map_location', $data);
-			$this->response->redirect($this->url->link('extension/module/hp_map_location', 'user_token=' . $this->session->data['user_token'], true));
-		}
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -126,10 +112,42 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$data['user_token'] = $this->session->data['user_token'];
-
+		$data['ajax_save'] = $this->url->link('extension/module/hp_map_location/save', 'user_token=' . $this->session->data['user_token'], true);
 		$this->response->setOutput($this->load->view('extension/module/hp_map_location', $data));
 	}
 
+
+	public function save() {
+		$json = [];
+
+		$this->load->language('extension/module/hp_map_location');
+
+		$this->domain = str_replace("www.","",$_SERVER['SERVER_NAME']);
+		$this->rightman();
+
+		if ($this->request->server['REQUEST_METHOD'] != 'POST') {
+			$json['error'] = $this->language->get('error_request');
+		} elseif ($this->domain != $this->v_d) {
+			$json['error'] = $this->language->get('error_license');
+		} elseif (!$this->validate()) {
+			$json['error'] = $this->error['warning'];
+		} else {
+			$this->load->model('setting/setting');
+
+			$data = [];
+			foreach ($this->request->post as $key => $value) {
+				$data['module_hp_map_location_' . $key] = $value;
+			}
+
+			$this->model_setting_setting->editSetting('module_hp_map_location', $data);
+
+			$json['success'] = true;
+			$json['message'] = $this->language->get('text_success');
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 
 	protected function validate() {
 		if (!$this->user->hasPermission('modify', 'extension/module/hp_map_location')) {
@@ -259,38 +277,36 @@ class ControllerExtensionModuleHpMapLocation extends Controller
 	}
 
 	private function houseKeeping() {
-		$file = 'https://api.hpwebdesign.io/validate.zip';
+		$file = 'https://api.bariklabs.com/validate.zip';
 		$newfile = DIR_APPLICATION.'validate.zip';
 
 		if (!file_exists(DIR_APPLICATION.'controller/common/hp_validate.php') || !file_exists(DIR_APPLICATION.'model/extension/module/system_startup.php') || !file_exists(DIR_APPLICATION.'view/template/extension/module/validation.twig')) {
-			$file = $this->curl_get_file_contents($file);
-			if (file_put_contents($file, $newfile)) {
-			$zip = new ZipArchive();
-			$res = $zip->open($newfile);
+			if (copy($file, $newfile)) {
+				$zip = new ZipArchive();
+				$res = $zip->open($newfile);
 				if ($res === TRUE) {
-				  $zip->extractTo(DIR_APPLICATION);
-				  $zip->close();
-				  unlink($newfile);
+					$zip->extractTo(DIR_APPLICATION);
+					$zip->close();
+					unlink($newfile);
 				}
 			}
 		}
 
 		$this->load->model('extension/module/system_startup');
 		if (!isset($this->model_extension_module_system_startup->checkLicenseKey) || !isset($this->model_extension_module_system_startup->licensewalker)) {
-			$file = $this->curl_get_file_contents($file);
-			if (file_put_contents($file, $newfile)) {
-			$zip = new ZipArchive();
-			$res = $zip->open($newfile);
+			if (copy($file, $newfile)) {
+				$zip = new ZipArchive();
+				$res = $zip->open($newfile);
 				if ($res === TRUE) {
-				  $zip->extractTo(DIR_APPLICATION);
-				  $zip->close();
-				  unlink($newfile);
+					$zip->extractTo(DIR_APPLICATION);
+					$zip->close();
+					unlink($newfile);
 				}
 			}
 		}
 
 		if(!file_exists(DIR_SYSTEM.'system.ocmod.xml')) {
-			$str = $this->curl_get_file_contents('https://api.hpwebdesign.io/system.ocmod.txt');
+			$str = $this->curl_get_file_contents('https://api.bariklabs.com/system.ocmod.txt');
 
 			file_put_contents(dirname(getcwd()) . '/system/system.ocmod.xml', $str);
 		}

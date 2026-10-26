@@ -4,7 +4,7 @@
   <code>hpmlqc</code>
   <version>1.0.0</version>
   <author>Hp Web Design</author>
-  <link>https://hpwebdesign.id</link>
+  <link>https://bariklabs.com</link>
   <file path="catalog/view/theme/journal3/template/journal3/checkout/address.twig">
     <operation error="skip">
       <search trim="true"><![CDATA[<div v-if="('{{ type }}' === 'payment') && shipping_required"]]></search>
