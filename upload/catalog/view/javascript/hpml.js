@@ -1,5 +1,9 @@
 function initMap(id, lat, lng) {
 
+    if (!document.getElementById(id) || !document.getElementById("pac-input")) {
+        return;
+    }
+
     if(window['_QuickCheckout']){
         window['_QuickCheckout'].$data.order_data.payment_map_location_lng = lng;
         window['_QuickCheckout'].$data.order_data.payment_map_location_lat = lat;

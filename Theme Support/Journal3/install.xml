@@ -61,13 +61,16 @@
         <link rel="stylesheet" type="text/css" href="https://unpkg.com/notyf@3/notyf.min.css">
         <script src="https://unpkg.com/notyf@3/notyf.min.js"></script>
          <script>
-         
-         console.log($('.payment-address input[type="radio"]').length);
-         
-             
-            
-             
-             
+         (function () {
+             function hpmlInitMapWhenReady(id, lat, lng, tries) {
+                 tries = tries || 0;
+                 if (document.getElementById(id) && document.getElementById('pac-input')) {
+                     initMap(id, lat, lng);
+                 } else if (tries < 50) {
+                     setTimeout(function () { hpmlInitMapWhenReady(id, lat, lng, tries + 1); }, 200);
+                 }
+             }
+
              $(document).on('change', '.payment-address input[type="radio"]', function(){
                
                
@@ -88,7 +91,7 @@
                   $('.input-edit-map').hide();
                 }
                  
-                 initMap('payment-map-location', -7.797068, 110.370529);
+                 hpmlInitMapWhenReady('payment-map-location', -7.797068, 110.370529);
                 },100);
              });
              
@@ -103,17 +106,15 @@
                  }
   
                  
-                 initMap('payment-map-location', -7.797068, 110.370529);
+                 hpmlInitMapWhenReady('payment-map-location', -7.797068, 110.370529);
                  
              },1000);
-             
-             
-
+         })();
          </script>
          
          
             <script>
-        
+        (function () {
         $("#modal-edit-location").remove();
         
          $("#content").prepend(`<div class="modal fade" data-backdrop="static" id="modal-edit-location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -277,6 +278,7 @@ fetch("index.php?route=extension/module/hp_map_location/editMapLocation", {
     
    
 });
+        })();
             </script>
    
     {% endif %}
