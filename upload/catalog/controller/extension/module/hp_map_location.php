@@ -71,7 +71,7 @@ class ControllerExtensionModuleHpMapLocation extends Controller {
 				if(!$data['have_coordinate']){
 					$data['module_id'] = rand(1, 100000);
 
-					$data['cart_page'] =  $route == 'checkout/cart';
+					$data['cart_page'] =  ($route == 'checkout/cart' || $route == 'checkout/checkout');
 
 					$data['module_hp_map_location_api'] = $this->config->get('module_hp_map_location_api');
 
