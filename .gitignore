@@ -8,3 +8,6 @@ distribution/
 .env
 CLAUDE.md
 .env
+composer.json
+composer.lock
+RoboFile.php
