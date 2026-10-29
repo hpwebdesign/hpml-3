@@ -2,7 +2,7 @@
 <modification>
   <name>Hp Map Location Journal3 QC</name>
   <code>hpmlqc</code>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <author>Hp Web Design</author>
   <link>https://bariklabs.com</link>
   <file path="catalog/view/theme/journal3/template/journal3/checkout/address.twig">
